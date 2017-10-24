@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout
+    android:id="@+id/drawer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.kdoctor.MainActivity"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <com.roughike.bottombar.BottomBar
+            android:id="@+id/bottomBar"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            app:bb_tabXmlResource="@xml/bottombar_tabs" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/viewPager"
+            android:paddingBottom="60dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            >
+        </android.support.v4.view.ViewPager>
+    </RelativeLayout>
+    <FrameLayout
+        android:id="@+id/fl"
+        android:layout_width="400dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:choiceMode="singleChoice"
+        android:background="#fff"
+        >
+
+        <fragment
+            android:id="@+id/fragmentDrawer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:name="com.kdoctor.fragments.FragmentDrawer"
+            >
+        </fragment>
+
+    </FrameLayout>
+</android.support.v4.widget.DrawerLayout>

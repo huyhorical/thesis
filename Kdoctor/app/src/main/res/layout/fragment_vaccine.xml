@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:sothree="http://schemas.android.com/apk/res-auto"
+    >
+<!--
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        />
+        -->
+    <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="0dp"
+        android:paddingTop="0dp"
+        android:id="@+id/rv_vaccine"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"
+        />
+
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/fam"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="80dp"
+        android:layout_marginRight="15dp"
+        sothree:fab_expandDirection="up"
+        sothree:fab_addButtonColorNormal="#0ff"
+        sothree:fab_addButtonColorPressed="#0ff"
+        sothree:fab_addButtonSize="normal"
+        >
+<!--
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabAnchor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            sothree:fab_size="mini"
+            sothree:fab_icon="@drawable/icon_anchor"
+            sothree:fab_colorPressed="#ff0"
+            />
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabCreate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            sothree:fab_size="mini"
+            sothree:fab_icon="@drawable/icon_add"
+            sothree:fab_colorPressed="#0ff"
+            />
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabJoin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            sothree:fab_size="mini"
+            sothree:fab_icon="@drawable/icon_join"
+            sothree:fab_colorPressed="#0ff"
+            />
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabOut"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            sothree:fab_size="mini"
+            sothree:fab_icon="@drawable/icon_out"
+            sothree:fab_colorPressed="#0ff"
+            />
+            -->
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+</FrameLayout>

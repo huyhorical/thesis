@@ -1,0 +1,20 @@
+<tabs>
+    <tab
+        id="@+id/tab_sickness"
+        icon="@drawable/tab_icon_sickness"
+        title="Sickness"
+        barColorWhenSelected="#FF0000"
+        />
+    <tab
+        id="@+id/tab_drug"
+        icon="@drawable/tab_icon_drug"
+        title="Drug"
+        barColorWhenSelected="#00FF00"
+        />
+    <tab
+        id="@+id/tab_vaccine"
+        icon="@drawable/tab_icon_vaccine"
+        title="Hopital"
+        barColorWhenSelected="#0000FF"
+        />
+</tabs>
