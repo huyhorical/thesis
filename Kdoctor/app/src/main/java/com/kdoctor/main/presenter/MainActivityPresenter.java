@@ -1,4 +1,4 @@
-package com.kdoctor;
+package com.kdoctor.main.presenter;
 
 import com.kdoctor.bases.BasePresenter;
 import com.kdoctor.bases.IView;

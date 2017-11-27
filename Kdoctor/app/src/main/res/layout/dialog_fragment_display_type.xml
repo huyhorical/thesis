@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#fff"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+    <RadioGroup
+        android:id="@+id/rg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <RadioButton
+            android:id="@+id/rb_selected"
+            android:text="Đã chọn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+        <RadioButton
+            android:id="@+id/rb_unselected"
+            android:text="Chưa chọn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+        <RadioButton
+            android:id="@+id/rb_select_all"
+            android:text="Tất cả"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
+    </RadioGroup>
+</RelativeLayout>

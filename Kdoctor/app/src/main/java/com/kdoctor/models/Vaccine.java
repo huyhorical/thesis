@@ -1,6 +1,8 @@
-package com.kdoctor.api.models;
+package com.kdoctor.models;
 
 import com.google.gson.annotations.SerializedName;
+
+import org.chalup.microorm.annotations.Column;
 
 /**
  * Created by INI\huy.trinh on 23/10/2017.
@@ -48,23 +50,33 @@ public class Vaccine {
     }
 
     public boolean isSelected() {
-        return isSelected;
+        return isSelected == 0 ? false : true;
     }
 
     public void setSelected(boolean selected) {
-        isSelected = selected;
+        isSelected = !selected ? 0 : 1;
     }
 
     @SerializedName("ID")
+    @Column("ID")
     int id;
+
     @SerializedName("ACTIVITY")
+    @Column("ACTIVITY")
     String activity;
+
     @SerializedName("START_MONTH")
+    @Column("START_MONTH")
     int startMonth;
+
     @SerializedName("END_MONTH")
+    @Column("END_MONTH")
     int endMonth;
+
     @SerializedName("NOTE")
+    @Column("NOTE")
     String note;
 
-    boolean isSelected;
+    @Column("SELECTED")
+    int isSelected;
 }

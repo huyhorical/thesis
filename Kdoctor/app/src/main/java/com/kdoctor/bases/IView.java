@@ -5,4 +5,6 @@ package com.kdoctor.bases;
  */
 
 public interface IView {
+    void showLoading();
+    void hideLoading();
 }

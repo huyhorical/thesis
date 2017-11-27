@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginBottom="24dp"
+    android:id="@+id/ll_item"
+    >
+    <ImageView
+        android:id="@+id/iv_drug"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:src="@drawable/icon_display"
+        android:background="#575"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <CheckBox
+            android:id="@+id/cb_note"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:button="@drawable/custom_checkbox_selector"
+            android:layout_margin="16dp"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            >
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cảm cúm"
+                android:textStyle="bold"
+                />
+            <TextView
+                android:id="@+id/tv_producer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nhà sản xuất"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_component"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:text="Thành phần" />
+
+    <TextView
+        android:id="@+id/tv_uses"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="5dp"
+        android:text="Công dụng" />
+
+    <TextView
+        android:id="@+id/tv_guide"
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Hướng dẫn"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        />
+    <TextView
+        android:id="@+id/tv_caution"
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Chống chỉ định"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        />
+    <TextView
+        android:id="@+id/tv_note"
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Ghi chú"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        />
+</LinearLayout>

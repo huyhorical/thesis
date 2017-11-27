@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:id="@+id/ll_item"
+    android:padding="10dp"
+    >
+    <TextView
+        android:id="@+id/tv_question"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Kdoctor hỏi: Abc?"
+        android:paddingBottom="5dp"
+        android:textSize="16dp"
+        />
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Bạn trả lời: "
+            android:textSize="16dp"
+            />
+        <TextView
+            android:id="@+id/tv_answer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Xyz"
+            android:textStyle="bold"
+            android:textColor="#00f"
+            android:textSize="16dp"
+            />
+    </TableRow>
+
+</LinearLayout>

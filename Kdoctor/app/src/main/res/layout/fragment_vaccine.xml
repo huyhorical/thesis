@@ -4,68 +4,104 @@
     android:layout_height="match_parent"
     xmlns:sothree="http://schemas.android.com/apk/res-auto"
     >
-<!--
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        />
-        -->
-    <android.support.v7.widget.RecyclerView
-        android:layout_marginTop="0dp"
-        android:paddingTop="0dp"
-        android:id="@+id/rv_vaccine"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/srl_vaccines"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical"
-        />
-
+        >
+        <android.support.v7.widget.RecyclerView
+            android:layout_marginTop="0dp"
+            android:paddingTop="0dp"
+            android:id="@+id/rv_vaccine"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"
+            />
+    </android.support.v4.widget.SwipeRefreshLayout>
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/fam"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
-        android:layout_marginBottom="80dp"
+        android:layout_marginBottom="15dp"
         android:layout_marginRight="15dp"
         sothree:fab_expandDirection="up"
-        sothree:fab_addButtonColorNormal="#0ff"
+        sothree:fab_addButtonColorNormal="@color/colorAccent"
         sothree:fab_addButtonColorPressed="#0ff"
         sothree:fab_addButtonSize="normal"
         >
-<!--
         <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabAnchor"
+            android:id="@+id/fab_display_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             sothree:fab_size="mini"
-            sothree:fab_icon="@drawable/icon_anchor"
-            sothree:fab_colorPressed="#ff0"
+            sothree:fab_icon="@drawable/icon_display"
+            sothree:fab_colorPressed="#0ff"
+            sothree:fab_colorNormal="@color/colorAccent"
+            />
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_reminder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            sothree:fab_size="mini"
+            sothree:fab_icon="@drawable/icon_alarm"
+            sothree:fab_colorPressed="#0ff"
+            sothree:fab_colorNormal="@color/colorAccent"
+            />
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_birthday_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            sothree:fab_size="mini"
+            sothree:fab_icon="@drawable/icon_calendar"
+            sothree:fab_colorPressed="#0ff"
+            sothree:fab_colorNormal="@color/colorAccent"
             />
 
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabCreate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            sothree:fab_size="mini"
-            sothree:fab_icon="@drawable/icon_add"
-            sothree:fab_colorPressed="#0ff"
-            />
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabJoin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            sothree:fab_size="mini"
-            sothree:fab_icon="@drawable/icon_join"
-            sothree:fab_colorPressed="#0ff"
-            />
-        <com.getbase.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabOut"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            sothree:fab_size="mini"
-            sothree:fab_icon="@drawable/icon_out"
-            sothree:fab_colorPressed="#0ff"
-            />
-            -->
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+    <FrameLayout
+        android:id="@+id/fl_label"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        >
+        <TextView
+            android:id="@+id/tv_display_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hiển thị: Tất cả"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="90dp"
+            android:layout_marginBottom="236dp"
+            android:background="#CCFFFFFF"
+            android:textColor="@color/colorAccent"
+            android:padding="2dp"
+            />
+        <TextView
+            android:id="@+id/tv_reminder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Thông báo: Tắt"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="90dp"
+            android:layout_marginBottom="175dp"
+            android:background="#CCFFFFFF"
+            android:textColor="@color/colorAccent"
+            android:padding="2dp"
+            />
+        <TextView
+            android:id="@+id/tv_birthday_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ngày sinh: Tắt"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="90dp"
+            android:layout_marginBottom="113dp"
+            android:background="#CCFFFFFF"
+            android:textColor="@color/colorAccent"
+            android:padding="2dp"
+            />
+    </FrameLayout>
 
 </FrameLayout>

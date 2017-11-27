@@ -2,19 +2,19 @@
     <tab
         id="@+id/tab_sickness"
         icon="@drawable/tab_icon_sickness"
-        title="Sickness"
+        title="Bệnh trẻ em"
         barColorWhenSelected="#FF0000"
         />
     <tab
         id="@+id/tab_drug"
         icon="@drawable/tab_icon_drug"
-        title="Drug"
+        title="Các loại thuốc"
         barColorWhenSelected="#00FF00"
         />
     <tab
         id="@+id/tab_vaccine"
         icon="@drawable/tab_icon_vaccine"
-        title="Hopital"
-        barColorWhenSelected="#0000FF"
+        title="Lịch tiêm chủng"
+        barColorWhenSelected="@color/colorAccent"
         />
 </tabs>

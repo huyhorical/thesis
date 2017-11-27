@@ -1,4 +1,4 @@
-package com.kdoctor;
+package com.kdoctor.main.view;
 
 import com.kdoctor.bases.IView;
 

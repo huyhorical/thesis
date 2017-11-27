@@ -3,12 +3,20 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="16dp"
+    android:id="@+id/ll_item"
     >
     <TextView
         android:id="@+id/tv_vaccine_category"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Tu 0 den 2 thang tuoi"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:text="Từ 0 đến 2 tháng tuổi"
+        android:textStyle="bold"
+        android:textColor="@color/colorAccent"
+        android:textSize="16dp"
         />
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,20 +25,23 @@
         >
         <CheckBox
             android:id="@+id/cb_activity_done"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:button="@drawable/custom_checkbox_selector"
             android:layout_margin="16dp"
             />
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
+            android:gravity="center_vertical"
             >
             <TextView
                 android:id="@+id/tv_activity"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Tiem chung abc"
+                android:textStyle="bold"
                 />
             <TextView
                 android:id="@+id/tv_time"
@@ -46,5 +57,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Ghi chu: abc..."
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         />
 </LinearLayout>

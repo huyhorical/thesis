@@ -9,7 +9,7 @@ public class RestServices {
     public static RestServices getInstance(){
         return restServices == null ? new RestServices() : restServices;
     }
-    private static final String URL = "http://vaccine.somee.com/";
+    public static final String URL = "http://kdoctor.somee.com/";
     private retrofit.RestAdapter restAdapter;
     private Functions functions;
 
