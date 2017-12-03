@@ -70,6 +70,15 @@
             sothree:fab_colorPressed="#0ff"
             sothree:fab_colorNormal="#f00"
             />
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            sothree:fab_size="mini"
+            sothree:fab_icon="@drawable/icon_status"
+            sothree:fab_colorPressed="#0ff"
+            sothree:fab_colorNormal="#f00"
+            />
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
@@ -86,7 +95,7 @@
             android:text="Tìm bệnh"
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="90dp"
-            android:layout_marginBottom="236dp"
+            android:layout_marginBottom="297dp"
             android:background="#CCFFFFFF"
             android:textColor="#f00"
             android:padding="2dp"
@@ -97,7 +106,7 @@
             android:text="Chuẩn bệnh"
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="90dp"
-            android:layout_marginBottom="175dp"
+            android:layout_marginBottom="236dp"
             android:background="#CCFFFFFF"
             android:textColor="#f00"
             android:padding="2dp"
@@ -106,6 +115,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Đang quan tâm"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="90dp"
+            android:layout_marginBottom="175dp"
+            android:background="#CCFFFFFF"
+            android:textColor="#f00"
+            android:padding="2dp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Danh sách khảo sát"
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="90dp"
             android:layout_marginBottom="113dp"

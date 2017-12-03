@@ -47,4 +47,40 @@ public class SicknessCategory {
     @SerializedName("LINK")
     @Column("URL")
     String urlAPI;
+
+    @SerializedName("IMAGE")
+    @Column("IMAGE_URL")
+    String imageURL;
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
+
+    public String getDataURL() {
+        return dataURL;
+    }
+
+    public void setDataURL(String dataURL) {
+        this.dataURL = dataURL;
+    }
+
+    @SerializedName("LINKDATA")
+    @Column("DATA_URL")
+    String dataURL;
+
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    @SerializedName("ACTIONNAME")
+    @Column("ACTION")
+    String action;
 }

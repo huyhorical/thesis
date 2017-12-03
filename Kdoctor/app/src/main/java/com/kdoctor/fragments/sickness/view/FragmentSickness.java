@@ -29,7 +29,11 @@ import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.kdoctor.R;
 import com.kdoctor.api.RestAIServices;
 import com.kdoctor.api.RestServices;
+import com.kdoctor.configuration.Kdoctor;
 import com.kdoctor.dialogs.CategoryDialog;
+import com.kdoctor.dialogs.CodeDetailsDialog;
+import com.kdoctor.dialogs.CodeDialog;
+import com.kdoctor.dialogs.DeleteDialog;
 import com.kdoctor.dialogs.QuestionDialog;
 import com.kdoctor.dialogs.SicknessInfoDialog;
 import com.kdoctor.dialogs.SicknessQuestionDialog;
@@ -39,6 +43,8 @@ import com.kdoctor.fragments.sickness.adapters.RecyclerViewAdapterCategory;
 import com.kdoctor.fragments.sickness.presenter.FragmentSicknessPresenter;
 import com.kdoctor.fragments.vaccines.adapters.RecyclerViewAdapterVaccine;
 import com.kdoctor.main.view.MainActivity;
+import com.kdoctor.models.Code;
+import com.kdoctor.models.CodeItem;
 import com.kdoctor.models.Question;
 import com.kdoctor.models.Sickness;
 import com.kdoctor.models.SicknessCategory;
@@ -50,6 +56,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -72,6 +79,8 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
     FloatingActionButton fabFind;
     @BindView(R.id.fab_investigate)
     FloatingActionButton fabInvestigate;
+    @BindView(R.id.fab_status)
+    FloatingActionButton fabStatus;
     @BindView(R.id.fl_label)
     FrameLayout flLabel;
     @BindView(R.id.srl_categories)
@@ -318,6 +327,96 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
                 dialog.show(getFragmentManager(), "");
             }
         });
+
+        fabStatus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openCodeDialog();
+            }
+        });
+    }
+
+    void openCodeDialog(){
+        List<Code> codesFromDB = DbManager.getInstance(getContext()).getRecords(DbManager.CODES, Code.class);
+        List<Code> codes = codesFromDB == null ? new ArrayList<Code>() : codesFromDB;
+
+        CodeDialog dialog = new CodeDialog(codes, new CodeDialog.OnClickListener() {
+            @Override
+            public void onMoreClickListener(Code code) {
+
+            }
+
+            @Override
+            public void onAddNew() {
+                CategoryDialog categoryDialog = new CategoryDialog(categories, new CategoryDialog.OnAnswerListener() {
+                    @Override
+                    public void onAnswerListener(final SicknessCategory answer) {
+                        RestServices.getInstance().getServices().getCodeItems(answer.getAction(), new Callback<List<CodeItem>>() {
+                            @Override
+                            public void success(List<CodeItem> items, Response response) {
+                                CodeDetailsDialog codeDetailsDialog = new CodeDetailsDialog(items, "", new CodeDetailsDialog.OnCall() {
+                                    @Override
+                                    public void onCreate(List<CodeItem> items, String note) {
+                                        HashMap<String, String> hashMap = new HashMap<String, String>();
+
+                                        for (CodeItem item:items
+                                                ) {
+                                            String prognostic = item.getPrognostic();
+                                            hashMap.put(prognostic, item.getAnswer() == null ? "" : item.getAnswer());
+                                        }
+                                        hashMap.put("NOTE", note);
+
+                                        RestServices.getInstance().getServices().postCode(answer.getDataURL().replace("api","").replace("/",""), hashMap, new Callback<String>() {
+                                            @Override
+                                            public void success(String s, Response response) {
+                                                ContentValues values = new ContentValues();
+                                                values.put("VALUE",s);
+                                                values.put("CATEGORY_NAME", answer.getName());
+                                                values.put("DATE", new SimpleDateFormat("HH:mm dd/MM/yyyy").format(Calendar.getInstance().getTime()));
+                                                DbManager.getInstance(getContext()).insertRecord(DbManager.CODES, values);
+
+                                                openCodeDialog();
+                                            }
+
+                                            @Override
+                                            public void failure(RetrofitError error) {
+                                                Toast.makeText(getContext(), "Lỗi hệ thống: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onUpdate(List<CodeItem> items, String note, int ID) {
+
+                                    }
+                                }, CodeDetailsDialog.CREATE, -9999);
+                                codeDetailsDialog.show(getFragmentManager(), "");
+                            }
+
+                            @Override
+                            public void failure(RetrofitError error) {
+
+                            }
+                        });
+                    }
+                });
+                categoryDialog.show(getFragmentManager(),"");
+            }
+
+            @Override
+            public void onDeleteClickListener(final Code code, final CodeDialog.CodesAdapter adapter) {
+                DeleteDialog dialog = new DeleteDialog(new DeleteDialog.OnClickListener() {
+                    @Override
+                    public void onDeleteClickListener() {
+                        DbManager.getInstance(Kdoctor.getInstance().getApplicationContext()).deleteRecord(DbManager.CODES, "VALUE", code.getValue());
+                        adapter.setCodes(DbManager.getInstance(getContext()).getRecords(DbManager.CODES, Code.class));
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+                dialog.show(getFragmentManager(), "");
+            }
+        });
+        dialog.show(getFragmentManager(), "");
     }
 
     void callQuestion(final String category, String value){

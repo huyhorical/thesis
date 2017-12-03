@@ -17,6 +17,6 @@ import retrofit.http.QueryMap;
  */
 
 public interface AIFunctions {
-    @GET("/api/{category}/")
+    @GET("/{category}/")
     void getQuestion(@Path("category") String category, @Query("input") String value, Callback<String> callback);
 }

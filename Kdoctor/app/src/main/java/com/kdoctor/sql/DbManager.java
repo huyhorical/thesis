@@ -46,6 +46,7 @@ public class DbManager extends SQLiteOpenHelper {
     public static final String DIAGNOSIS = "DIAGNOSIS";
     public static final String VACCINES = "VACCINES";
     public static final String FUNCTIONS = "FUNCTIONS";
+    public static final String CODES = "CODES";
 
     public DbManager(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -54,6 +55,14 @@ public class DbManager extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String query;
+
+        if (!isTableExists(db, CODES)) {
+            query = "create table " + CODES + " ("
+                    + "VALUE text primary key,"
+                    + "CATEGORY_NAME text, "
+                    + "DATE text)";
+            db.execSQL(query);
+        }
 
         if (!isTableExists(db, DRUGS)) {
             query = "create table " + DRUGS + " ("
@@ -158,6 +167,11 @@ public class DbManager extends SQLiteOpenHelper {
         cursor.close();
         close();
         return results;
+    }
+
+    public void deleteRecord(String tableName, String column, String value){
+        SQLiteDatabase database = getWritableDatabase();
+        database.delete(tableName, column+"=?", new String[]{value});
     }
 
     public void selectRecord(String tableName, Object o, int id){
