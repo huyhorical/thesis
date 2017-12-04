@@ -106,6 +106,9 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
 
     String code;
 
+    private boolean loading = true;
+    int pastVisiblesItems, visibleItemCount, totalItemCount;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -120,7 +123,8 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
 
         presenter = new FragmentSicknessPresenter(this);
 
-        rvSickness.setLayoutManager(new LinearLayoutManager(getActivity()));
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        rvSickness.setLayoutManager(linearLayoutManager);
         List<Sickness> sicknesses = new ArrayList<>();
         sicknessesAdapter = new SicknessesAdapter(sicknesses, new OnClickListener() {
             @Override
@@ -144,6 +148,43 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
         rvSickness.setAdapter(sicknessesAdapter);
         rvSickness.setHasFixedSize(false);
 
+        rvSickness.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(dy > 0) //check for scroll down
+                {
+                    visibleItemCount = linearLayoutManager.getChildCount();
+                    totalItemCount = linearLayoutManager.getItemCount();
+                    pastVisiblesItems = linearLayoutManager.findFirstVisibleItemPosition();
+
+                    if (loading)
+                    {
+                        if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount)
+                        {
+                            loading = false;
+                            RestServices.getInstance().getServices().getSicknessCategory(category.getId(), totalItemCount, totalItemCount+1, new Callback<List<Sickness>>() {
+                                @Override
+                                public void success(List<Sickness> sicknesses, Response response) {
+                                    sicknessesAdapter.sicknesses.addAll(sicknesses);
+                                    sicknessesAdapter.notifyDataSetChanged();
+                                    srlCategories.setVisibility(View.GONE);
+                                    srlSickness.setVisibility(View.VISIBLE);
+                                    ((MainActivity)getActivity()).go(category.getName());
+                                    loading = true;
+                                }
+
+                                @Override
+                                public void failure(RetrofitError error) {
+                                    loading = true;
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+        });
+
         srlCategories.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -154,6 +195,8 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
         srlSickness.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                srlSickness.setRefreshing(false);
+                /*
                 srlSickness.setRefreshing(true);
                 RestServices.getInstance().getServices().getSicknessCategory(category.getId(), 0, 5, new Callback<List<Sickness>>() {
                     @Override
@@ -176,6 +219,7 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
                         }
                     }
                 });
+                */
             }
         });
 
@@ -189,7 +233,7 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
             @Override
             public void onItemClickListener(final SicknessCategory category) {
                 FragmentSickness.this.category = category;
-                RestServices.getInstance().getServices().getSicknessCategory(category.getId(), 0, 5, new Callback<List<Sickness>>() {
+                RestServices.getInstance().getServices().getSicknessCategory(category.getId(), 0, 1, new Callback<List<Sickness>>() {
                     @Override
                     public void success(List<Sickness> sicknesses, Response response) {
                         sicknessesAdapter.sicknesses.clear();
