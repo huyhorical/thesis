@@ -74,6 +74,8 @@ public class FragmentDrug extends Fragment implements IFragmentDrug{
     @BindView(R.id.srl_drug)
     SwipeRefreshLayout srlDrug;
 
+    private boolean loading = true;
+    int pastVisiblesItems, visibleItemCount, totalItemCount;
 
     private View rootView;
 
@@ -93,8 +95,9 @@ public class FragmentDrug extends Fragment implements IFragmentDrug{
         srlDrug.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                srlDrug.setRefreshing(true);
-                presenter.getDrugs();
+                srlDrug.setRefreshing(false);
+                //srlDrug.setRefreshing(true);
+                //presenter.getDrugs();
             }
         });
 
@@ -113,7 +116,8 @@ public class FragmentDrug extends Fragment implements IFragmentDrug{
         progressDialog = new ProgressDialog(getActivity());
         progressDialog.setTitle("Vui lòng đợi...");
 
-        rvDrug.setLayoutManager(new LinearLayoutManager(getActivity()));
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
+        rvDrug.setLayoutManager(linearLayoutManager);
         adapter = new RecyclerViewAdapterDrug(new ArrayList<Drug>(), new RecyclerViewAdapterDrug.OnClickListener() {
             @Override
             public void onResearchClickListener(Drug drug) {
@@ -133,8 +137,31 @@ public class FragmentDrug extends Fragment implements IFragmentDrug{
                 DbManager.getInstance(getContext()).selectRecord(DbManager.DRUGS, drug, drug.getId());
             }
         });
+
         rvDrug.setAdapter(adapter);
         rvDrug.setHasFixedSize(false);
+
+        rvDrug.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(dy > 0) //check for scroll down
+                {
+                    visibleItemCount = linearLayoutManager.getChildCount();
+                    totalItemCount = linearLayoutManager.getItemCount();
+                    pastVisiblesItems = linearLayoutManager.findFirstVisibleItemPosition();
+
+                    if (loading)
+                    {
+                        if ( (visibleItemCount + pastVisiblesItems) >= totalItemCount)
+                        {
+                            loading = false;
+                            presenter.getDrugs(totalItemCount, totalItemCount+1);
+                        }
+                    }
+                }
+            }
+        });
 
         fabHeart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -225,7 +252,10 @@ public class FragmentDrug extends Fragment implements IFragmentDrug{
 
     @Override
     public void onGetDrugsSuccess(List<Drug> drugs) {
-        adapter.updateDrugList(drugs);
+        //adapter.updateDrugList(drugs);
+        loading = true;
+        adapter.getDrugs().addAll(drugs);
+        adapter.notifyDataSetChanged();
         if (srlDrug.isRefreshing()) {
             srlDrug.setRefreshing(false);
         }
@@ -234,6 +264,7 @@ public class FragmentDrug extends Fragment implements IFragmentDrug{
 
     @Override
     public void onGetDrugsFailure(String error) {
+        loading = true;
         if (srlDrug.isRefreshing()) {
             srlDrug.setRefreshing(false);
         }
@@ -242,7 +273,7 @@ public class FragmentDrug extends Fragment implements IFragmentDrug{
             @Override
             public void onPositiveButtonClick() {
                 showLoading();
-                presenter.getDrugs();
+                presenter.getDrugs(totalItemCount, 1);
             }
 
             @Override
@@ -258,7 +289,7 @@ public class FragmentDrug extends Fragment implements IFragmentDrug{
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser && (adapter.getDrugs() == null || adapter.getDrugs().size() == 0)){
             showLoading();
-            presenter.getDrugs();
+            presenter.getDrugs(0, 1);
         }
     }
 

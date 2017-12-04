@@ -20,11 +20,13 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kdoctor.R;
 import com.kdoctor.configuration.Kdoctor;
 import com.kdoctor.models.Code;
 import com.kdoctor.models.CodeItem;
+import com.kdoctor.models.CodeItemGet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +53,8 @@ public class CodeDetailsDialog extends DialogFragment{
     OnCall onCall;
     int type;
     int ID;
+    CodeItemGet itemGet;
+    Code code;
 
     public List<CodeItem> getItems() {
         return items;
@@ -64,10 +68,12 @@ public class CodeDetailsDialog extends DialogFragment{
     String note;
 
     @SuppressLint("ValidFragment")
-    public CodeDetailsDialog(List<CodeItem> items, String note, OnCall onCall, int type, int ID){
+    public CodeDetailsDialog(List<CodeItem> items, String note, Code code, CodeItemGet itemGet, OnCall onCall, int type, int ID){
         this.items = items;
         this.note = note;
         this.type = type;
+        this.itemGet = itemGet;
+        this.code = code;
         this.onCall = onCall;
     }
 
@@ -80,7 +86,11 @@ public class CodeDetailsDialog extends DialogFragment{
         ButterKnife.bind(this, rootView);
 
         rvItems.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new CodeItemAdapter(items, new CodeItemAdapter.OnItemClickListener() {
+        if (type == UPDATE){
+            List<CodeItemGet.ItemGet> itemGets = itemGet.getItemGetList();
+
+        }
+        adapter = new CodeItemAdapter(items, itemGet, new CodeItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClickListener(Code code) {
                 dismiss();
@@ -92,22 +102,26 @@ public class CodeDetailsDialog extends DialogFragment{
 
         edtNote.setText(note);
 
+        if (itemGet != null){
+            edtNote.setText(itemGet.getNote());
+        }
+
         builder.setTitle("Danh sách triệu chứng...");
         builder.setView(rootView);
 
-        builder.setPositiveButton(type == UPDATE ? "Cập nhật" : "Thêm", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(type == UPDATE ? "  Cập nhật" : "  Thêm", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (ID != -9999){
+                if (type != UPDATE){
                     onCall.onCreate(items, edtNote.getText().toString());
                 }
                 else{
-                    onCall.onUpdate(items, edtNote.getText().toString(), ID);
+                    onCall.onUpdate(items, edtNote.getText().toString(), ID, code.getCategotyDataPath());
                 }
             }
         });
 
-        builder.setNegativeButton("Kết thúc", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("  Kết thúc", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -126,15 +140,17 @@ public class CodeDetailsDialog extends DialogFragment{
 
     public interface OnCall{
         void onCreate(List<CodeItem> items, String note);
-        void onUpdate(List<CodeItem> items, String note, int ID);
+        void onUpdate(List<CodeItem> items, String note, int ID, String dataPath);
     }
 
     public static class CodeItemAdapter extends RecyclerView.Adapter<CodeItemAdapter.CodeItemViewHolder>{
         private List<CodeItem> items = new ArrayList<CodeItem>();
         OnItemClickListener onItemClickListener;
+        CodeItemGet itemGet;
 
-        public CodeItemAdapter(List<CodeItem> items, OnItemClickListener onItemClickListener){
+        public CodeItemAdapter(List<CodeItem> items, CodeItemGet itemGet, OnItemClickListener onItemClickListener){
             this.items = items;
+            this.itemGet = itemGet;
             this.onItemClickListener = onItemClickListener;
         }
 
@@ -149,13 +165,13 @@ public class CodeDetailsDialog extends DialogFragment{
         public void onBindViewHolder(final CodeItemViewHolder holder, final int position) {
             final CodeItem item = items.get(position);
             holder.tvQuestion.setText(item.getQuestion());
-            holder.edtType.setText(item.getPrognostic());
             holder.edtType.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     holder.edtType.setText("");
                 }
             });
+
             holder.edtType.addTextChangedListener(new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -175,11 +191,12 @@ public class CodeDetailsDialog extends DialogFragment{
 
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(Kdoctor.getInstance().getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, item.getAnswers());
             holder.spnItem.setAdapter(adapter);
+            holder.spnItem.setSelected(false);
+            holder.spnItem.setSelection(0,true);
             holder.spnItem.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     holder.edtType.setText(holder.spnItem.getSelectedItem().toString());
-                    ((TextView)view).setText("");
                 }
 
                 @Override
@@ -187,6 +204,16 @@ public class CodeDetailsDialog extends DialogFragment{
 
                 }
             });
+
+            if (itemGet != null){
+                for (CodeItemGet.ItemGet i:itemGet.getItemGetList()
+                        ) {
+                    if (i.getPrognostic().equals(item.getPrognostic())){
+                        holder.edtType.setText(i.getAnswer());
+                    }
+                    break;
+                }
+            }
         }
 
         @Override

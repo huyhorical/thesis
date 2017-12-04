@@ -25,8 +25,8 @@ public class FragmentDrugPresenter extends BasePresenter implements IFragmentDru
     }
 
     @Override
-    public void getDrugs() {
-        getRestAPI().getDrugs(0, 10, new Callback<List<Drug>>() {
+    public void getDrugs(int startIndex, int endIndex) {
+        getRestAPI().getDrugs(startIndex, endIndex, new Callback<List<Drug>>() {
             @Override
             public void success(List<Drug> drugs, Response response) {
                 ((IFragmentDrug)getView()).onGetDrugsSuccess(drugs);

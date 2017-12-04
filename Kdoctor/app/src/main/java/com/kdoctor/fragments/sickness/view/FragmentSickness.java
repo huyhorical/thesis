@@ -45,6 +45,7 @@ import com.kdoctor.fragments.vaccines.adapters.RecyclerViewAdapterVaccine;
 import com.kdoctor.main.view.MainActivity;
 import com.kdoctor.models.Code;
 import com.kdoctor.models.CodeItem;
+import com.kdoctor.models.CodeItemGet;
 import com.kdoctor.models.Question;
 import com.kdoctor.models.Sickness;
 import com.kdoctor.models.SicknessCategory;
@@ -342,8 +343,62 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
 
         CodeDialog dialog = new CodeDialog(codes, new CodeDialog.OnClickListener() {
             @Override
-            public void onMoreClickListener(Code code) {
+            public void onMoreClickListener(final Code code) {
+                RestServices.getInstance().getServices().getCodeItems(code.getCategotyAction(), new Callback<List<CodeItem>>() {
+                    @Override
+                    public void success(final List<CodeItem> codeItems, Response response) {
+                        RestServices.getInstance().getServices().getCode(code.getCategotyDataPath().replace("api","").replace("/",""), code.getValue(), new Callback<CodeItemGet>() {
+                            @Override
+                            public void success(CodeItemGet codeItemGet, Response response) {
+                                //Toast.makeText(getContext(), codeItems.get(0).getPrognostic()+" - 0",Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(getContext(), codeItemGet.getItemGetList().get(0).getPrognostic()+" - 1",Toast.LENGTH_SHORT).show();
+                                CodeDetailsDialog detailsDialog = new CodeDetailsDialog(codeItems, null, code, codeItemGet, new CodeDetailsDialog.OnCall() {
+                                    @Override
+                                    public void onCreate(List<CodeItem> items, String note) {
 
+                                    }
+
+                                    @Override
+                                    public void onUpdate(List<CodeItem> items, String note, int ID, String dataPath) {
+                                        HashMap<String, String> hashMap = new HashMap<String, String>();
+
+                                        for (CodeItem item:items
+                                                ) {
+                                            String prognostic = item.getPrognostic();
+                                            hashMap.put(prognostic, item.getAnswer() == null ? "" : item.getAnswer());
+                                        }
+                                        hashMap.put("NOTE", note);
+                                        hashMap.put("ID", "15");
+
+                                        RestServices.getInstance().getServices().putCode(dataPath.replace("api","").replace("/",""), hashMap, new Callback<String>() {
+                                            @Override
+                                            public void success(String s, Response response) {
+                                                openCodeDialog();
+                                            }
+
+                                            @Override
+                                            public void failure(RetrofitError error) {
+                                                Toast.makeText(getContext(), "Lỗi hệ thống - " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                    }
+                                }, CodeDetailsDialog.UPDATE, Integer.parseInt(codeItemGet.getId()));
+
+                                detailsDialog.show(getFragmentManager(), "");
+                            }
+
+                            @Override
+                            public void failure(RetrofitError error) {
+                                Toast.makeText(getContext(), "Lỗi hệ thống: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Toast.makeText(getContext(), "Lỗi hệ thống: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
             @Override
@@ -354,7 +409,7 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
                         RestServices.getInstance().getServices().getCodeItems(answer.getAction(), new Callback<List<CodeItem>>() {
                             @Override
                             public void success(List<CodeItem> items, Response response) {
-                                CodeDetailsDialog codeDetailsDialog = new CodeDetailsDialog(items, "", new CodeDetailsDialog.OnCall() {
+                                CodeDetailsDialog codeDetailsDialog = new CodeDetailsDialog(items, "", null,null, new CodeDetailsDialog.OnCall() {
                                     @Override
                                     public void onCreate(List<CodeItem> items, String note) {
                                         HashMap<String, String> hashMap = new HashMap<String, String>();
@@ -372,6 +427,8 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
                                                 ContentValues values = new ContentValues();
                                                 values.put("VALUE",s);
                                                 values.put("CATEGORY_NAME", answer.getName());
+                                                values.put("CATEGORY_DATA_PATH", answer.getDataURL());
+                                                values.put("CATEGORY_ACTION", answer.getAction());
                                                 values.put("DATE", new SimpleDateFormat("HH:mm dd/MM/yyyy").format(Calendar.getInstance().getTime()));
                                                 DbManager.getInstance(getContext()).insertRecord(DbManager.CODES, values);
 
@@ -386,7 +443,7 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
                                     }
 
                                     @Override
-                                    public void onUpdate(List<CodeItem> items, String note, int ID) {
+                                    public void onUpdate(List<CodeItem> items, String note, int ID, String dataPath) {
 
                                     }
                                 }, CodeDetailsDialog.CREATE, -9999);

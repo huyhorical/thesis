@@ -1,6 +1,7 @@
 package com.kdoctor.api;
 
 import com.kdoctor.models.CodeItem;
+import com.kdoctor.models.CodeItemGet;
 import com.kdoctor.models.Drug;
 import com.kdoctor.models.Sickness;
 import com.kdoctor.models.SicknessCategory;
@@ -15,6 +16,7 @@ import retrofit.http.Body;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.GET;
 import retrofit.http.POST;
+import retrofit.http.PUT;
 import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.http.Query;
@@ -44,5 +46,8 @@ public interface Functions {
     @POST("/api/{category}")
     public void postCode(@Path("category") String category, @Body HashMap<String, String> data, Callback<String> callback);
     @GET("/api/{category}")
-    public void getCode(@Path("category") String category, @Query("code") String code, Callback<List<CodeItem>> callback);
+    public void getCode(@Path("category") String category, @Query("code") String code, Callback<CodeItemGet> callback);
+
+    @PUT("/api/{category}")
+    public void putCode(@Path("category") String category, @Body HashMap<String, String> data, Callback<String> callback);
 }

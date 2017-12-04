@@ -94,14 +94,14 @@ public class CodeDialog extends DialogFragment{
         builder.setTitle("Danh sách khảo sát...");
         builder.setView(rootView);
 
-        builder.setPositiveButton("Thêm mới", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("  Thêm mới", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 onClickListener.onAddNew();
             }
         });
 
-        builder.setNegativeButton("Kết thúc", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("  Kết thúc", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
 

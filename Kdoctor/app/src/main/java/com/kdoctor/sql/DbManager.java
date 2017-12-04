@@ -59,7 +59,9 @@ public class DbManager extends SQLiteOpenHelper {
         if (!isTableExists(db, CODES)) {
             query = "create table " + CODES + " ("
                     + "VALUE text primary key,"
+                    + "CATEGORY_DATA_PATH text, "
                     + "CATEGORY_NAME text, "
+                    + "CATEGORY_ACTION text, "
                     + "DATE text)";
             db.execSQL(query);
         }

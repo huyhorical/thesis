@@ -36,8 +36,30 @@ public class Code {
     @Column("VALUE")
     String value;
 
+    public String getCategotyDataPath() {
+        return categotyDataPath;
+    }
+
+    public void setCategotyDataPath(String categotyDataPath) {
+        this.categotyDataPath = categotyDataPath;
+    }
+
+    @Column("CATEGORY_DATA_PATH")
+    String categotyDataPath;
+
     @Column("CATEGORY_NAME")
     String categotyName;
+
+    public String getCategotyAction() {
+        return categotyAction;
+    }
+
+    public void setCategotyAction(String categotyAction) {
+        this.categotyAction = categotyAction;
+    }
+
+    @Column("CATEGORY_ACTION")
+    String categotyAction;
 
     @Column("DATE")
     String date;

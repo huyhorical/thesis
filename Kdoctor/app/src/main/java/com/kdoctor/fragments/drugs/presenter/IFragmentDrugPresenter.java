@@ -5,5 +5,5 @@ package com.kdoctor.fragments.drugs.presenter;
  */
 
 public interface IFragmentDrugPresenter {
-    void getDrugs();
+    void getDrugs(int startIndex, int endIndex);
 }
