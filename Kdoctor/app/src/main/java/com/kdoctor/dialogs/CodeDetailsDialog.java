@@ -12,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 
 import com.kdoctor.R;
 import com.kdoctor.configuration.Kdoctor;
+import com.kdoctor.custom.SpinnerPlus;
 import com.kdoctor.models.Code;
 import com.kdoctor.models.CodeItem;
 import com.kdoctor.models.CodeItemGet;
@@ -155,6 +157,16 @@ public class CodeDetailsDialog extends DialogFragment{
         }
 
         @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            return position;
+        }
+
+        @Override
         public CodeItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             LayoutInflater inflater = LayoutInflater.from(parent.getContext());
             View itemView = inflater.inflate(R.layout.item_code_item, parent, false);
@@ -192,11 +204,13 @@ public class CodeDetailsDialog extends DialogFragment{
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(Kdoctor.getInstance().getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, item.getAnswers());
             holder.spnItem.setAdapter(adapter);
             holder.spnItem.setSelected(false);
-            holder.spnItem.setSelection(0,true);
-            holder.spnItem.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            //holder.spnItem.setSelection(-1,true);
+
+            holder.spnItem.setOnItemSelectedEvenIfUnchangedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     holder.edtType.setText(holder.spnItem.getSelectedItem().toString());
+                    holder.spnItem.setSelection(holder.spnItem.getSelectedItemPosition(),false);
                 }
 
                 @Override
@@ -210,8 +224,8 @@ public class CodeDetailsDialog extends DialogFragment{
                         ) {
                     if (i.getPrognostic().equals(item.getPrognostic())){
                         holder.edtType.setText(i.getAnswer());
+                        break;
                     }
-                    break;
                 }
             }
         }
@@ -233,7 +247,7 @@ public class CodeDetailsDialog extends DialogFragment{
             @BindView(R.id.edt_type)
             EditText edtType;
             @BindView(R.id.spn_item)
-            Spinner spnItem;
+            SpinnerPlus spnItem;
 
             public CodeItemViewHolder(View itemView) {
                 super(itemView);

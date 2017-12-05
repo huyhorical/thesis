@@ -393,7 +393,7 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
                     public void success(final List<CodeItem> codeItems, Response response) {
                         RestServices.getInstance().getServices().getCode(code.getCategotyDataPath().replace("api","").replace("/",""), code.getValue(), new Callback<CodeItemGet>() {
                             @Override
-                            public void success(CodeItemGet codeItemGet, Response response) {
+                            public void success(final CodeItemGet codeItemGet, Response response) {
                                 //Toast.makeText(getContext(), codeItems.get(0).getPrognostic()+" - 0",Toast.LENGTH_SHORT).show();
                                 //Toast.makeText(getContext(), codeItemGet.getItemGetList().get(0).getPrognostic()+" - 1",Toast.LENGTH_SHORT).show();
                                 CodeDetailsDialog detailsDialog = new CodeDetailsDialog(codeItems, null, code, codeItemGet, new CodeDetailsDialog.OnCall() {
@@ -412,7 +412,7 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
                                             hashMap.put(prognostic, item.getAnswer() == null ? "" : item.getAnswer());
                                         }
                                         hashMap.put("NOTE", note);
-                                        hashMap.put("ID", "15");
+                                        hashMap.put("ID", Integer.toString(codeItemGet.getId()));
 
                                         RestServices.getInstance().getServices().putCode(dataPath.replace("api","").replace("/",""), hashMap, new Callback<String>() {
                                             @Override
@@ -426,8 +426,7 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
                                             }
                                         });
                                     }
-                                }, CodeDetailsDialog.UPDATE, Integer.parseInt(codeItemGet.getId()));
-
+                                }, CodeDetailsDialog.UPDATE, codeItemGet.getId());
                                 detailsDialog.show(getFragmentManager(), "");
                             }
 

@@ -9,13 +9,7 @@ import java.util.List;
  */
 
 public class CodeItemGet {
-    public String getId() {
-        return id;
-    }
 
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getCode() {
         return code;
@@ -41,8 +35,16 @@ public class CodeItemGet {
         this.note = note;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     @SerializedName("ID")
-    String id;
+    int id;
     @SerializedName("CODE")
     String code;
     @SerializedName("NOIDUNG")

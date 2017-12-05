@@ -43,11 +43,12 @@ public interface Functions {
     @GET("/api/AnswerAPI")
     public void getCodeItems(@Query("dmbenh") String input, Callback<List<CodeItem>> callback);
 
-    @POST("/api/{category}")
-    public void postCode(@Path("category") String category, @Body HashMap<String, String> data, Callback<String> callback);
+
     @GET("/api/{category}")
     public void getCode(@Path("category") String category, @Query("code") String code, Callback<CodeItemGet> callback);
 
+    @POST("/api/{category}")
+    public void postCode(@Path("category") String category, @Body HashMap<String, String> data, Callback<String> callback);
     @PUT("/api/{category}")
     public void putCode(@Path("category") String category, @Body HashMap<String, String> data, Callback<String> callback);
 }
