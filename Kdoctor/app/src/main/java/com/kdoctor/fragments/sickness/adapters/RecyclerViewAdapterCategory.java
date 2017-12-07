@@ -4,15 +4,20 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kdoctor.R;
+import com.kdoctor.api.RestServices;
+import com.kdoctor.configuration.Kdoctor;
 import com.kdoctor.dialogs.SicknessQuestionDialog;
 import com.kdoctor.models.SicknessCategory;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,14 +44,16 @@ public class RecyclerViewAdapterCategory extends RecyclerView.Adapter<RecyclerVi
 
     @Override
     public void onBindViewHolder(final AnswerViewHolder holder, final int position) {
-        final String name = categories.get(position).getName();
-        holder.tvAnswer.setText(name);
+        final SicknessCategory category = categories.get(position);
+        holder.tvAnswer.setText(category.getName());
         holder.llItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onItemClickListener.onItemClickListener(categories.get(position));
             }
         });
+        String urlImage = category.getImageURL().contains("~") ? RestServices.URL + category.getImageURL().replace("~/", "") : category.getImageURL();
+        Picasso.with(Kdoctor.getInstance().getAppContext()).load(urlImage).fit().into(holder.ivCategory);
     }
 
     @Override
@@ -65,6 +72,8 @@ public class RecyclerViewAdapterCategory extends RecyclerView.Adapter<RecyclerVi
         LinearLayout llItem;
         @BindView(R.id.tv_answer)
         TextView tvAnswer;
+        @BindView(R.id.iv_category)
+        ImageView ivCategory;
 
         public AnswerViewHolder(View itemView) {
             super(itemView);
