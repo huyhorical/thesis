@@ -84,10 +84,6 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
     FloatingActionButton fabStatus;
     @BindView(R.id.fl_label)
     FrameLayout flLabel;
-    @BindView(R.id.srl_categories)
-    SwipeRefreshLayout srlCategories;
-    @BindView(R.id.srl_sickness)
-    SwipeRefreshLayout srlSickness;
     @BindView(R.id.fam)
     FloatingActionsMenu fam;
 
@@ -168,8 +164,8 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
                                 public void success(List<Sickness> sicknesses, Response response) {
                                     sicknessesAdapter.sicknesses.addAll(sicknesses);
                                     sicknessesAdapter.notifyDataSetChanged();
-                                    srlCategories.setVisibility(View.GONE);
-                                    srlSickness.setVisibility(View.VISIBLE);
+                                    rvCategories.setVisibility(View.GONE);
+                                    rvSickness.setVisibility(View.VISIBLE);
                                     ((MainActivity)getActivity()).go(category.getName());
                                     loading = true;
                                 }
@@ -182,44 +178,6 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
                         }
                     }
                 }
-            }
-        });
-
-        srlCategories.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                srlCategories.setRefreshing(true);
-                presenter.getCategories();
-            }
-        });
-        srlSickness.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                srlSickness.setRefreshing(false);
-                /*
-                srlSickness.setRefreshing(true);
-                RestServices.getInstance().getServices().getSicknessCategory(category.getId(), 0, 5, new Callback<List<Sickness>>() {
-                    @Override
-                    public void success(List<Sickness> sicknesses, Response response) {
-                        sicknessesAdapter.sicknesses.clear();
-                        sicknessesAdapter.sicknesses.addAll(sicknesses);
-                        sicknessesAdapter.notifyDataSetChanged();
-                        srlCategories.setVisibility(View.GONE);
-                        srlSickness.setVisibility(View.VISIBLE);
-                        ((MainActivity)getActivity()).go(category.getName());
-                        if (srlSickness.isRefreshing()) {
-                            srlSickness.setRefreshing(false);
-                        }
-                    }
-
-                    @Override
-                    public void failure(RetrofitError error) {
-                        if (srlSickness.isRefreshing()) {
-                            srlSickness.setRefreshing(false);
-                        }
-                    }
-                });
-                */
             }
         });
 
@@ -239,8 +197,8 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
                         sicknessesAdapter.sicknesses.clear();
                         sicknessesAdapter.sicknesses.addAll(sicknesses);
                         sicknessesAdapter.notifyDataSetChanged();
-                        srlCategories.setVisibility(View.GONE);
-                        srlSickness.setVisibility(View.VISIBLE);
+                        rvCategories.setVisibility(View.GONE);
+                        rvSickness.setVisibility(View.VISIBLE);
                         ((MainActivity)getActivity()).go(category.getName());
                     }
 
@@ -592,8 +550,8 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
     }
 
     public void back(){
-        srlSickness.setVisibility(View.GONE);
-        srlCategories.setVisibility(View.VISIBLE);
+        rvSickness.setVisibility(View.GONE);
+        rvCategories.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -602,16 +560,10 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
         this.categories.addAll(categories);
         adapter.notifyDataSetChanged();
         hideLoading();
-        if (srlCategories.isRefreshing()) {
-            srlCategories.setRefreshing(false);
-        }
     }
 
     @Override
     public void onGetCategoriesFailure(String error) {
-        if (srlCategories.isRefreshing()) {
-            srlCategories.setRefreshing(false);
-        }
         hideLoading();
         QuestionDialog questionDialog = new QuestionDialog("Thông tin tín hiệu", "Không thế kết nối đến máy chủ. Vui lòng thử lại.", "Thử lại", new QuestionDialog.OnTwoChoicesSelection() {
             @Override

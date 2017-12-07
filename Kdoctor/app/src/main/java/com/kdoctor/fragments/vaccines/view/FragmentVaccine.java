@@ -86,8 +86,6 @@ public class FragmentVaccine extends Fragment implements IFragmentVaccine{
     TextView tvBirthdayFilter;
     @BindView(R.id.tv_reminder)
     TextView tvReminder;
-    @BindView(R.id.srl_vaccines)
-    SwipeRefreshLayout srlVaccines;
 
 
     private View rootView;
@@ -104,14 +102,6 @@ public class FragmentVaccine extends Fragment implements IFragmentVaccine{
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         presenter = new FragmentVaccinePresenter(this);
-
-        srlVaccines.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                srlVaccines.setRefreshing(true);
-                presenter.getVaccines();
-            }
-        });
 
         fam.setOnFloatingActionsMenuUpdateListener(new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
             @Override
@@ -239,17 +229,11 @@ public class FragmentVaccine extends Fragment implements IFragmentVaccine{
         adapter.updateVaccineList(vaccines);
         List<Function> functions = DbManager.getInstance(null).getRecords(DbManager.FUNCTIONS, Function.class);
         presenter.adjustList(functions);
-        if (srlVaccines.isRefreshing()) {
-            srlVaccines.setRefreshing(false);
-        }
         hideLoading();
     }
 
     @Override
     public void onGetVaccinesFailure(String error) {
-        if (srlVaccines.isRefreshing()) {
-            srlVaccines.setRefreshing(false);
-        }
         hideLoading();
         QuestionDialog questionDialog = new QuestionDialog("Lỗi", "Bạn muốn tải lại danh sách tiêm chủng không?", new QuestionDialog.OnTwoChoicesSelection() {
             @Override

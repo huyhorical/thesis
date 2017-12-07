@@ -4,38 +4,33 @@
     android:layout_height="match_parent"
     xmlns:sothree="http://schemas.android.com/apk/res-auto"
     >
+    <!--
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/background"
         android:scaleType="centerCrop"
         />
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/srl_categories"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv_categories"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="vertical"
-            />
-    </android.support.v4.widget.SwipeRefreshLayout>
+        -->
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/srl_sickness"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_categories"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        >
+        android:scrollbars="vertical"
+        />
+
+
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_sickness"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
+        android:visibility="gone"
+
         />
-    </android.support.v4.widget.SwipeRefreshLayout>
+
 
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/fam"

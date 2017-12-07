@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.kdoctor.R;
 import com.kdoctor.api.RestServices;
 import com.kdoctor.configuration.Kdoctor;
+import com.kdoctor.custom.RoundRectCornerImageView;
 import com.kdoctor.dialogs.SicknessQuestionDialog;
 import com.kdoctor.models.SicknessCategory;
 import com.squareup.picasso.Picasso;
@@ -73,7 +74,7 @@ public class RecyclerViewAdapterCategory extends RecyclerView.Adapter<RecyclerVi
         @BindView(R.id.tv_answer)
         TextView tvAnswer;
         @BindView(R.id.iv_category)
-        ImageView ivCategory;
+        RoundRectCornerImageView ivCategory;
 
         public AnswerViewHolder(View itemView) {
             super(itemView);

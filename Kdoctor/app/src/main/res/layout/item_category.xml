@@ -7,14 +7,14 @@
     android:layout_marginTop="20dp"
     android:layout_marginBottom="20dp"
     >
-    <ImageView
+    <com.kdoctor.custom.RoundRectCornerImageView
         android:id="@+id/iv_category"
         android:layout_gravity="center_horizontal"
-        android:layout_width="220dp"
-        android:layout_height="123dp" />
+        android:layout_width="320dp"
+        android:layout_height="180dp" />
     <TextView
         android:id="@+id/tv_answer"
-        android:layout_width="220dp"
+        android:layout_width="320dp"
         android:paddingTop="6dp"
         android:paddingBottom="6dp"
         android:paddingLeft="12dp"
@@ -24,8 +24,9 @@
         android:layout_height="wrap_content"
         android:text="Answer 1"
         android:gravity="center"
-        android:background="@drawable/circle_background"
+        android:background="@drawable/circle_corner_top"
         android:textSize="18dp"
         android:layout_gravity="center_horizontal"
+        android:textColor="#FFFFFF"
         />
 </LinearLayout>

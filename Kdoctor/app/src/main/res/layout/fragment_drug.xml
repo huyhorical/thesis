@@ -3,13 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:sothree="http://schemas.android.com/apk/res-auto"
-    android:paddingTop="16dp"
     >
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/srl_drug"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
         <android.support.v7.widget.RecyclerView
             android:layout_marginTop="0dp"
             android:paddingTop="0dp"
@@ -18,7 +12,7 @@
             android:layout_height="match_parent"
             android:scrollbars="vertical"
             />
-    </android.support.v4.widget.SwipeRefreshLayout>
+
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/fam"
         android:layout_width="wrap_content"

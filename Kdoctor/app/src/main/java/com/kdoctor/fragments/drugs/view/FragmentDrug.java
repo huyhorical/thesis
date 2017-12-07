@@ -71,8 +71,7 @@ public class FragmentDrug extends Fragment implements IFragmentDrug{
     FloatingActionButton fabFind;
     @BindView(R.id.fl_label)
     FrameLayout flLabel;
-    @BindView(R.id.srl_drug)
-    SwipeRefreshLayout srlDrug;
+
 
     private boolean loading = true;
     int pastVisiblesItems, visibleItemCount, totalItemCount;
@@ -91,15 +90,6 @@ public class FragmentDrug extends Fragment implements IFragmentDrug{
         super.onViewCreated(view, savedInstanceState);
         ButterKnife.bind(this, view);
         presenter = new FragmentDrugPresenter(this);
-
-        srlDrug.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                srlDrug.setRefreshing(false);
-                //srlDrug.setRefreshing(true);
-                //presenter.getDrugs();
-            }
-        });
 
         fam.setOnFloatingActionsMenuUpdateListener(new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
             @Override
@@ -256,18 +246,12 @@ public class FragmentDrug extends Fragment implements IFragmentDrug{
         loading = true;
         adapter.getDrugs().addAll(drugs);
         adapter.notifyDataSetChanged();
-        if (srlDrug.isRefreshing()) {
-            srlDrug.setRefreshing(false);
-        }
         hideLoading();
     }
 
     @Override
     public void onGetDrugsFailure(String error) {
         loading = true;
-        if (srlDrug.isRefreshing()) {
-            srlDrug.setRefreshing(false);
-        }
         hideLoading();
         QuestionDialog questionDialog = new QuestionDialog("Lỗi", "Bạn muốn tải lại danh sách tiêm chủng không?", new QuestionDialog.OnTwoChoicesSelection() {
             @Override
