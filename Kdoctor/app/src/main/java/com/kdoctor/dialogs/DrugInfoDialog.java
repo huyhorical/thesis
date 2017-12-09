@@ -79,12 +79,25 @@ public class DrugInfoDialog extends DialogFragment{
         String urlImage = drug.getImageURL().contains("~") ? RestServices.URL + drug.getImageURL().replace("~/", "") : drug.getImageURL();
         Picasso.with(DrugInfoDialog.this.getContext()).load(urlImage).fit().into(ivDrug);
         tvName.setText(drug.getName());
-        tvProducer.setText("Nhà sản xuất: " + drug.getProducer());
-        tvComponent.setText("Thành phần: " + drug.getComponent());
-        tvUses.setText("Công dụng: " + drug.getUses());
-        tvGuide.setText("Hướng dẫn sử dụng: " + drug.getGuide());
-        tvCaution.setText("Chống chỉ định: " + drug.getCaution());
-        tvNote.setText("Ghi chú: " + drug.getNote());
+        if (drug.getName() == null || drug.getName().equals("")) tvName.setText("Chưa có dữ liệu.");
+
+        tvProducer.setText(drug.getProducer());
+        if (drug.getProducer() == null || drug.getProducer().equals("")) tvProducer.setText("Chưa có dữ liệu.");
+
+        tvComponent.setText(drug.getComponent());
+        if (drug.getComponent() == null || drug.getComponent().equals("")) tvComponent.setText("Chưa có dữ liệu.");
+
+        tvUses.setText(drug.getUses());
+        if (drug.getUses() == null || drug.getUses().equals("")) tvUses.setText("Chưa có dữ liệu.");
+
+        tvGuide.setText(drug.getGuide());
+        if (drug.getGuide() == null || drug.getGuide().equals("")) tvGuide.setText("Chưa có dữ liệu.");
+
+        tvCaution.setText(drug.getCaution());
+        if (drug.getCaution() == null || drug.getCaution().equals("")) tvCaution.setText("Chưa có dữ liệu.");
+
+        tvNote.setText(drug.getNote());
+        if (drug.getNote() == null || drug.getNote().equals("")) tvNote.setText("Chưa có dữ liệu.");
 
         List<Drug> drugs = DbManager.getInstance(Kdoctor.getInstance().getAppContext()).getRecords(DbManager.DRUGS, Drug.class);
         boolean isSelected = false;

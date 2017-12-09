@@ -90,6 +90,7 @@ public class DbManager extends SQLiteOpenHelper {
                     + "PROGNOSTIC text, "
                     + "TREATMENT text, "
                     + "IMAGE_URL text, "
+                    + "NOTE text, "
                     + "SELECTED int)";
             db.execSQL(query);
         }
@@ -174,6 +175,11 @@ public class DbManager extends SQLiteOpenHelper {
     public void deleteRecord(String tableName, String column, String value){
         SQLiteDatabase database = getWritableDatabase();
         database.delete(tableName, column+"=?", new String[]{value});
+    }
+
+    public void deleteAllRecord(String tableName){
+        SQLiteDatabase database = getWritableDatabase();
+        database.delete(tableName, null, null);
     }
 
     public void selectRecord(String tableName, Object o, int id){

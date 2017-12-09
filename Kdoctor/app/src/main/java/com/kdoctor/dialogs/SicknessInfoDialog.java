@@ -53,6 +53,8 @@ public class SicknessInfoDialog extends DialogFragment{
     TextView tvSummary;
     @BindView(R.id.tv_treatment)
     TextView tvTreatment;
+    @BindView(R.id.tv_note)
+    TextView tvNote;
     @BindView(R.id.cb_note)
     CheckBox cbNote;
 
@@ -76,9 +78,19 @@ public class SicknessInfoDialog extends DialogFragment{
         String urlImage = sickness.getImageURL().contains("~") ? RestServices.URL + sickness.getImageURL().replace("~/", "") : sickness.getImageURL();
         Picasso.with(SicknessInfoDialog.this.getContext()).load(urlImage).fit().into(ivSickness);
         tvName.setText("Tên bệnh: " + sickness.getName());
-        tvPrognostic.setText("Biểu hiện: " + sickness.getPrognostic());
-        tvSummary.setText("Tổng quan: " + sickness.getSummary());
-        tvTreatment.setText("Điều trị: " + sickness.getTreatment());
+        if (sickness.getName() == null || sickness.getName().equals("")) tvName.setText("Chưa có dữ liệu.");
+
+        tvPrognostic.setText(sickness.getPrognostic());
+        if (sickness.getPrognostic() == null || sickness.getPrognostic().equals("")) tvPrognostic.setText("Chưa có dữ liệu.");
+
+        tvSummary.setText(sickness.getSummary());
+        if (sickness.getSummary() == null || sickness.getSummary().equals("")) tvSummary.setText("Chưa có dữ liệu.");
+
+        tvTreatment.setText(sickness.getTreatment());
+        if (sickness.getTreatment() == null || sickness.getTreatment().equals("")) tvTreatment.setText("Chưa có dữ liệu.");
+
+        tvNote.setText(sickness.getNote());
+        if (sickness.getNote() == null || sickness.getNote().equals("")) tvNote.setText("Chưa có dữ liệu.");
 
         List<Sickness> sicknesses = DbManager.getInstance(Kdoctor.getInstance().getAppContext()).getRecords(DbManager.SICKNESSES, Sickness.class);
         boolean isSelected = false;

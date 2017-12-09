@@ -39,7 +39,9 @@
                 android:text="Paracetamol"
                 android:textStyle="bold"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textSize="17dp"
+                />
             <TableRow
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -53,7 +55,9 @@
                     android:id="@+id/tv_producer"
                     android:text="Tân Hiệp Phát"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:lines="1"
+                    />
             </TableRow>
         </LinearLayout>
     </LinearLayout>

@@ -94,6 +94,18 @@ public class Sickness {
     @Column("IMAGE_URL")
     String imageURL;
 
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    @SerializedName("NOTE")
+    @Column("NOTE")
+    String note;
+
     public boolean isSelected() {
         return isSelected == 0 ? false : true;
     }

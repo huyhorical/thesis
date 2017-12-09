@@ -34,6 +34,7 @@ import com.kdoctor.R;
 import com.kdoctor.api.RestServices;
 
 import com.kdoctor.bases.IView;
+import com.kdoctor.configuration.Kdoctor;
 import com.kdoctor.dialogs.DisplayTypeDialog;
 import com.kdoctor.dialogs.QuestionDialog;
 import com.kdoctor.fragments.vaccines.adapters.RecyclerViewAdapterVaccine;
@@ -187,6 +188,8 @@ public class FragmentVaccine extends Fragment implements IFragmentVaccine{
                 DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        //DbManager.getInstance(Kdoctor.getInstance().getApplicationContext()).deleteAllRecord(DbManager.VACCINES);
+
                         List<Function> functions = DbManager.getInstance(null).getRecords(DbManager.FUNCTIONS, Function.class);
                         for (Function function :
                                 functions) {
