@@ -17,8 +17,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kdoctor.R;
+import com.kdoctor.dialogs.QuestionDialog;
 import com.kdoctor.fragments.drawer.view.FragmentDrawer;
 import com.kdoctor.fragments.drugs.view.FragmentDrug;
 import com.kdoctor.fragments.sickness.view.FragmentSickness;
@@ -28,6 +30,7 @@ import com.kdoctor.main.presenter.MainActivityPresenter;
 import com.kdoctor.models.Diagnosis;
 import com.kdoctor.models.Sickness;
 import com.kdoctor.models.SicknessCategory;
+import com.kdoctor.models.Vaccine;
 import com.kdoctor.services.VaccineService;
 import com.kdoctor.sql.DbManager;
 import com.roughike.bottombar.BottomBar;
@@ -110,6 +113,16 @@ public class MainActivity extends AppCompatActivity implements IMainActivity {
         viewPager.setAdapter(adapterViewPager);
 
         initEventListeners();
+
+        if (VaccineService.message != null && !VaccineService.message.equals("")){
+            QuestionDialog dialog = new QuestionDialog("Tiêm chủng", VaccineService.message, new QuestionDialog.OnOneChoiceSelection() {
+                @Override
+                public void onButtonClick() {
+
+                }
+            });
+            dialog.show(getSupportFragmentManager(), "");
+        }
     }
 
     void initEventListeners(){
@@ -152,6 +165,16 @@ public class MainActivity extends AppCompatActivity implements IMainActivity {
                         viewPager.setCurrentItem(0);
                         break;
                 }
+
+                rlBack.setVisibility(View.GONE);
+                rlMain.setVisibility(View.VISIBLE);
+                try {
+                    ((FragmentSickness) lstFragments.get(0)).back();
+                }
+                catch (Exception e){
+
+                }
+
                 BottomBarTab barTab = bottomBar.getTabWithId(tabId);
                 tvTitle.setText(barTab.getTitle());
                 rlMain.setBackgroundColor(barTab.getBarColorWhenSelected());
@@ -193,6 +216,10 @@ public class MainActivity extends AppCompatActivity implements IMainActivity {
             }
         };
         drawer.addDrawerListener(mDrawerToggle);
+
+        List<Vaccine> vaccines = DbManager.getInstance(getApplicationContext()).getRecords(DbManager.VACCINES, Vaccine.class);
+        VaccineService.setVaccines(vaccines);
+
         startService(new Intent(this, VaccineService.class));
     }
 

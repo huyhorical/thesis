@@ -13,8 +13,11 @@ import android.widget.Toast;
 
 import com.kdoctor.R;
 
+import com.kdoctor.configuration.Kdoctor;
+import com.kdoctor.dialogs.SicknessesDialog;
 import com.kdoctor.models.Function;
 import com.kdoctor.models.Vaccine;
+import com.kdoctor.services.VaccineService;
 import com.kdoctor.sql.DbManager;
 
 import java.util.ArrayList;
@@ -35,9 +38,12 @@ public class RecyclerViewAdapterVaccine extends RecyclerView.Adapter<RecyclerVie
     private List<Vaccine> vaccines = new ArrayList<Vaccine>();
     List<Function> functions;
 
-    public RecyclerViewAdapterVaccine(List<Vaccine> vaccines){
+    OnClickListener onClickListener;
+
+    public RecyclerViewAdapterVaccine(List<Vaccine> vaccines, OnClickListener onClickListener){
         this.vaccines = vaccines;
         this.functions = DbManager.getInstance(null).getRecords(DbManager.FUNCTIONS, Function.class);
+        this.onClickListener = onClickListener;
     }
 
     public void updateVaccineList(List<Vaccine> vaccines){
@@ -54,7 +60,7 @@ public class RecyclerViewAdapterVaccine extends RecyclerView.Adapter<RecyclerVie
     }
 
     @Override
-    public void onBindViewHolder(VaccineViewHolder holder, final int position) {
+    public void onBindViewHolder(final VaccineViewHolder holder, final int position) {
         final Vaccine vaccine = vaccines.get(position);
 
         if (getCategoryName(position).equals("")){
@@ -66,18 +72,30 @@ public class RecyclerViewAdapterVaccine extends RecyclerView.Adapter<RecyclerVie
         holder.tvVaccineCategory.setText(getCategoryName(position));
         holder.cbActivityDone.setOnCheckedChangeListener(null);
         holder.cbActivityDone.setChecked(vaccine.isSelected());
+
+        if (vaccine.isSelected()){
+            holder.llSelected.setVisibility(View.VISIBLE);
+        }
+        else{
+            holder.llSelected.setVisibility(View.GONE);
+        }
+
         holder.cbActivityDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Vaccine element =  vaccines.get(position);
                 if (((CheckBox)view).isChecked()) {
                     element.setSelected(true);
+                    element.setRead(false);
                     DbManager.getInstance(null).selectRecord(DbManager.VACCINES, element, element.getId());
+                    holder.llSelected.setVisibility(View.VISIBLE);
                 }
                 else{
-                    vaccines.get(position).setSelected(false);
-                    DbManager.getInstance(null).selectRecord(DbManager.VACCINES, element, element.getId());
+                    onClickListener.onUnSelectedClickListener(vaccines.get(position), holder.cbActivityDone);
                 }
+
+                List<Vaccine> vaccines = DbManager.getInstance(Kdoctor.getInstance().getApplicationContext()).getRecords(DbManager.VACCINES, Vaccine.class);
+                VaccineService.setVaccines(vaccines);
             }
         });
 
@@ -95,8 +113,28 @@ public class RecyclerViewAdapterVaccine extends RecyclerView.Adapter<RecyclerVie
         }
         holder.tvTime.setText(time);
 
+        if (vaccine.getMessage() != null && !vaccine.getMessage().equals("")){
+            holder.tvMessage.setText(vaccine.getMessage());
+        }
+        else{
+            holder.tvMessage.setText("Chưa có.");
+        }
 
-        String note = ((vaccine.getNote() == null || vaccine.getNote().equals(""))) ? "" : "Ghi chú: " + vaccine.getNote();
+        if (vaccine.getAlarmDate() != null && !vaccine.getAlarmDate().equals("")){
+            holder.tvDate.setText(vaccine.getAlarmDate());
+        }
+        else{
+            holder.tvDate.setText("Chưa thiết lập.");
+        }
+
+        holder.tvEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickListener.onEditClickListener(vaccine.getId());
+            }
+        });
+
+        String note = ((vaccine.getNote() == null || vaccine.getNote().equals(""))) ? "" : "Lưu ý: " + vaccine.getNote();
         if (note.equals("")){
             holder.tvNote.setVisibility(View.GONE);
         }
@@ -194,10 +232,23 @@ public class RecyclerViewAdapterVaccine extends RecyclerView.Adapter<RecyclerVie
         TextView tvNote;
         @BindView(R.id.ll_item)
         LinearLayout llItem;
+        @BindView(R.id.tv_message)
+        TextView tvMessage;
+        @BindView(R.id.tv_edit)
+        TextView tvEdit;
+        @BindView(R.id.tv_date)
+        TextView tvDate;
+        @BindView(R.id.ll_selected)
+        LinearLayout llSelected;
 
         public VaccineViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    public interface OnClickListener{
+        void onEditClickListener(int id);
+        void onUnSelectedClickListener(Vaccine vaccine, CheckBox checkBox);
     }
 }

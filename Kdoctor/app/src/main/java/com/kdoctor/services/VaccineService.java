@@ -18,7 +18,10 @@ import com.kdoctor.R;
 import com.kdoctor.fragments.vaccines.adapters.RecyclerViewAdapterVaccine;
 import com.kdoctor.main.view.MainActivity;
 import com.kdoctor.models.Vaccine;
+import com.kdoctor.sql.DbManager;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -62,6 +65,8 @@ public class VaccineService extends Service {
 
     private static List<Vaccine> hasReadElements = new ArrayList<Vaccine>();
 
+    public static String message = "";
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -76,16 +81,16 @@ public class VaccineService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        //singleStart();
+        multiStart();
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    void singleStart(){
         new Thread(new Runnable() {
             @Override
             public void run() {
                 while (isRunning) {
-                    /*
-                    Vaccine vaccine = new Vaccine();
-                    vaccine.setActivity("Vaccine A");
-                    vaccine.setStartMonth(12);
-                    vaccine.setEndMonth(24);
-                    */
                     Calendar calendar = Calendar.getInstance();
                     for (Vaccine vaccine :
                             vaccines) {
@@ -118,7 +123,62 @@ public class VaccineService extends Service {
                 stopSelf();
             }
         }).start();
-        return super.onStartCommand(intent, flags, startId);
+    }
+
+    void multiStart(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (isRunning) {
+                    List<Vaccine> alarms = new ArrayList<Vaccine>();
+                    Calendar calendar = Calendar.getInstance();
+
+                    vaccines = DbManager.getInstance(getApplicationContext()).getRecords(DbManager.VACCINES, Vaccine.class);
+
+                    for (Vaccine vaccine :
+                            vaccines) {
+
+                        Date date = null;
+
+                        try {
+                            date = new SimpleDateFormat("dd/MM/yyyy").parse(vaccine.getAlarmDate());
+                            
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        
+                        if (/*!hasRead && */date != null && daysBetween(date, calendar.getTime()) == 0 && !vaccine.isRead()){
+                            alarms.add(vaccine);
+                            vaccine.setRead(true);
+                        }
+                    }
+
+                    if (alarms.size() > 0){
+                        //List<Vaccine> vaccines = DbManager.getInstance(getApplicationContext()).getRecords(DbManager.VACCINES, Vaccine.class);
+                        for (Vaccine a: alarms
+                             ) {
+
+                            for (Vaccine v:vaccines
+                                    ) {
+                                if (v.getId() == a.getId()){
+                                    v.setRead(true);
+                                    break;
+                                }
+                            }
+
+                        }
+                        DbManager.getInstance(getApplicationContext()).updateRecords(DbManager.VACCINES, vaccines);
+                        showNotification(alarms);
+                    }
+                    try{
+                        Thread.sleep(5000);
+                    }
+                    catch (Exception e){
+                    }
+                }
+                stopSelf();
+            }
+        }).start();
     }
 
     public void showNotification(Vaccine vaccine){
@@ -151,6 +211,47 @@ public class VaccineService extends Service {
         vibrator.vibrate(2000);
 
         hasReadElements.add(vaccine);
+    }
+
+    public void showNotification(List<Vaccine> vaccines){
+        Intent intent = new Intent(this, MainActivity.class);
+        PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
+
+        String contentText = "";
+        for (Vaccine vaccine:vaccines
+             ) {
+            contentText += vaccine.getActivity();
+            contentText += "\n";
+            contentText += vaccine.getMessage();
+            contentText += "\n";
+            contentText += "\n";
+        }
+
+        message = contentText;
+
+        Notification n  = new Notification.Builder(this)
+                .setContentTitle("Lịch nhắc tiêm chủng")
+                .setContentText(contentText)
+                .setSmallIcon(R.drawable.kdoctor_icon)
+                .setContentIntent(pIntent)
+                .setAutoCancel(true)
+                .addAction(R.drawable.kdoctor_icon, "Xác nhận", pIntent).build();
+
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+        notificationManager.notify(0, n);
+
+        try {
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(), notification);
+            ringtone.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        Vibrator vibrator = (Vibrator)getSystemService(Context.VIBRATOR_SERVICE);
+        vibrator.vibrate(2000);
     }
 
     public int daysBetween(Date d1, Date d2){

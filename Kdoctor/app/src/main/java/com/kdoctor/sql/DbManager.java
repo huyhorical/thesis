@@ -111,6 +111,9 @@ public class DbManager extends SQLiteOpenHelper {
                     + "START_MONTH integer, "
                     + "END_MONTH integer, "
                     + "NOTE text, "
+                    + "MESSAGE text, "
+                    + "ALARM_DATE text, "
+                    + "READ int, "
                     + "SELECTED int)";
             db.execSQL(query);
         }

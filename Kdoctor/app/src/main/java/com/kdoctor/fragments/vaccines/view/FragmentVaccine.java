@@ -15,12 +15,14 @@ import android.support.v7.widget.DialogTitle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
+import android.text.style.TtsSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -37,6 +39,8 @@ import com.kdoctor.bases.IView;
 import com.kdoctor.configuration.Kdoctor;
 import com.kdoctor.dialogs.DisplayTypeDialog;
 import com.kdoctor.dialogs.QuestionDialog;
+import com.kdoctor.dialogs.TypeTextDateDialog;
+import com.kdoctor.dialogs.TypeTextDialog;
 import com.kdoctor.fragments.vaccines.adapters.RecyclerViewAdapterVaccine;
 import com.kdoctor.fragments.vaccines.presenter.FragmentVaccinePresenter;
 import com.kdoctor.fragments.vaccines.view.IFragmentVaccine;
@@ -88,7 +92,6 @@ public class FragmentVaccine extends Fragment implements IFragmentVaccine{
     @BindView(R.id.tv_reminder)
     TextView tvReminder;
 
-
     private View rootView;
 
     @Nullable
@@ -120,7 +123,55 @@ public class FragmentVaccine extends Fragment implements IFragmentVaccine{
         progressDialog.setTitle("Vui lòng đợi...");
 
         rvVaccine.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new RecyclerViewAdapterVaccine(new ArrayList<Vaccine>());
+        adapter = new RecyclerViewAdapterVaccine(new ArrayList<Vaccine>(), new RecyclerViewAdapterVaccine.OnClickListener() {
+            @Override
+            public void onEditClickListener(final int id) {
+                TypeTextDateDialog dialog = new TypeTextDateDialog("Nhập ghi chú", new TypeTextDateDialog.OnClickListener() {
+                    @Override
+                    public void onPositiveButtonClickListener(String text, String dateString) {
+                        List<Vaccine> vaccineList = DbManager.getInstance(getContext()).getRecords(DbManager.VACCINES, Vaccine.class);
+                        for (Vaccine vaccine:vaccineList
+                                ) {
+                            if (vaccine.getId() == id){
+                                vaccine.setMessage(text);
+                                vaccine.setAlarmDate(dateString);
+                            }
+                        }
+                        DbManager.getInstance(getContext()).updateRecords(DbManager.VACCINES, vaccineList);
+                        adapter.setVaccines(vaccineList);
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onNegativeButtonClickListener() {
+
+                    }
+                });
+                dialog.show(getFragmentManager(), "");
+            }
+
+            @Override
+            public void onUnSelectedClickListener(final Vaccine vaccine, final CheckBox checkBox) {
+                QuestionDialog dialog = new QuestionDialog("Xác nhận", "Việc làm này sẽ đồng thời hủy bỏ ghi chú (nếu có), bạn chắc chắn chứ?", "Xác nhận", new QuestionDialog.OnTwoChoicesSelection() {
+                    @Override
+                    public void onPositiveButtonClick() {
+                        vaccine.setSelected(false);
+                        vaccine.setAlarmDate("");
+                        vaccine.setMessage("");
+                        DbManager.getInstance(null).selectRecord(DbManager.VACCINES, vaccine, vaccine.getId());
+
+                        adapter.setVaccines(DbManager.getInstance(getContext()).getRecords(DbManager.VACCINES, Vaccine.class));
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onNegativeButtonClick() {
+                        checkBox.setChecked(true);
+                    }
+                });
+                dialog.show(getFragmentManager(), "");
+            }
+        });
         rvVaccine.setAdapter(adapter);
         rvVaccine.setHasFixedSize(false);
 
@@ -171,9 +222,11 @@ public class FragmentVaccine extends Fragment implements IFragmentVaccine{
             public void onClick(View v) {
                 if (VaccineService.isRunning()) {
                     VaccineService.setIsRunning(false);
-                    tvReminder.setText("Thông báo: Tắt");
+                    tvReminder.setText("Nhắc nhở: Tắt");
                 }
                 else{
+                    List<Vaccine> vaccines = DbManager.getInstance(getContext()).getRecords(DbManager.VACCINES, Vaccine.class);
+                    VaccineService.setVaccines(vaccines);
                     VaccineService.setIsRunning(true);
                     getActivity().startService(new Intent(getActivity().getBaseContext(), VaccineService.class));
                     tvReminder.setText("Nhắc nhở: Bật");
@@ -303,10 +356,10 @@ public class FragmentVaccine extends Fragment implements IFragmentVaccine{
 
         switch (status){
             case "OFF":
-                tvBirthdayFilter.setText("Ngày sinh: Chưa thiết lập");
+                tvBirthdayFilter.setText("Lọc theo ngày sinh: Trống");
                 break;
             default:
-                tvBirthdayFilter.setText("Ngày sinh: "+status);
+                tvBirthdayFilter.setText("Lọc theo ngày sinh: "+status);
                 Date date;
                 try {
                     date = (new SimpleDateFormat("dd/MM/yyyy")).parse(status);
@@ -361,7 +414,55 @@ public class FragmentVaccine extends Fragment implements IFragmentVaccine{
 
         rvVaccine.setAdapter(null);
         rvVaccine.setLayoutManager(null);
-        adapter = new RecyclerViewAdapterVaccine(vaccines);
+        adapter = new RecyclerViewAdapterVaccine(vaccines, new RecyclerViewAdapterVaccine.OnClickListener() {
+            @Override
+            public void onEditClickListener(final int id) {
+                TypeTextDateDialog dialog = new TypeTextDateDialog("Nhập ghi chú", new TypeTextDateDialog.OnClickListener() {
+                    @Override
+                    public void onPositiveButtonClickListener(String text, String dateString) {
+                        List<Vaccine> vaccineList = DbManager.getInstance(getContext()).getRecords(DbManager.VACCINES, Vaccine.class);
+                        for (Vaccine vaccine:vaccineList
+                                ) {
+                            if (vaccine.getId() == id){
+                                vaccine.setMessage(text);
+                                vaccine.setAlarmDate(dateString);
+                            }
+                        }
+                        DbManager.getInstance(getContext()).updateRecords(DbManager.VACCINES, vaccineList);
+                        adapter.setVaccines(vaccineList);
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onNegativeButtonClickListener() {
+
+                    }
+                });
+                dialog.show(getFragmentManager(), "");
+            }
+
+            @Override
+            public void onUnSelectedClickListener(final Vaccine vaccine, final CheckBox checkBox) {
+                QuestionDialog dialog = new QuestionDialog("Xác nhận", "Việc làm này sẽ đồng thời hủy bỏ ghi chú (nếu có), bạn chắc chắn chứ?", "Xác nhận", new QuestionDialog.OnTwoChoicesSelection() {
+                    @Override
+                    public void onPositiveButtonClick() {
+                        vaccine.setSelected(false);
+                        vaccine.setAlarmDate("");
+                        vaccine.setMessage("");
+                        DbManager.getInstance(null).selectRecord(DbManager.VACCINES, vaccine, vaccine.getId());
+
+                        adapter.setVaccines(DbManager.getInstance(getContext()).getRecords(DbManager.VACCINES, Vaccine.class));
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onNegativeButtonClick() {
+                        checkBox.setChecked(true);
+                    }
+                });
+                dialog.show(getFragmentManager(), "");
+            }
+        });
         rvVaccine.setAdapter(adapter);
         rvVaccine.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter.sort();

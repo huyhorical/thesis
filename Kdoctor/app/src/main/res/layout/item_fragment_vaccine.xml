@@ -56,8 +56,73 @@
         android:id="@+id/tv_note"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Ghi chu: abc..."
+        android:text="Lưu ý: abc..."
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         />
+
+    <LinearLayout
+        android:id="@+id/ll_selected"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            >
+            <TextView
+                android:layout_marginTop="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ghi chú:"
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                android:textStyle="bold"
+                />
+            <TextView
+                android:id="@+id/tv_edit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sửa ghi chú"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:textAlignment="textEnd"
+                android:textColor="#00f"
+                android:layout_alignParentRight="true"
+                />
+        </RelativeLayout>
+        <TextView
+            android:id="@+id/tv_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Chưa có ghi chú."
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginEnd="16dp"
+            />
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nhắc nhở vào: "
+                android:layout_marginLeft="16dp"
+                android:layout_marginStart="16dp"
+                />
+            <TextView
+                android:id="@+id/tv_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Chưa thiết lập."
+                android:layout_marginRight="16dp"
+                android:layout_marginEnd="16dp"
+                />
+        </TableRow>
+    </LinearLayout>
 </LinearLayout>

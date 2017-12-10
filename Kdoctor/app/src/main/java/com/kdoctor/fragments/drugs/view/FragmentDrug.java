@@ -253,7 +253,7 @@ public class FragmentDrug extends Fragment implements IFragmentDrug{
     public void onGetDrugsFailure(String error) {
         loading = true;
         hideLoading();
-        QuestionDialog questionDialog = new QuestionDialog("Lỗi", "Bạn muốn tải lại danh sách tiêm chủng không?", new QuestionDialog.OnTwoChoicesSelection() {
+        QuestionDialog questionDialog = new QuestionDialog("Lỗi", "Bạn muốn tải lại danh sách thuốc không?", new QuestionDialog.OnTwoChoicesSelection() {
             @Override
             public void onPositiveButtonClick() {
                 showLoading();

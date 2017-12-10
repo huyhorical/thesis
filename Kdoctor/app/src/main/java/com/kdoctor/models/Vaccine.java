@@ -57,6 +57,14 @@ public class Vaccine {
         isSelected = !selected ? 0 : 1;
     }
 
+    public boolean isRead() {
+        return isRead == 0 ? false : true;
+    }
+
+    public void setRead(boolean read) {
+        isRead = !read ? 0 : 1;
+    }
+
     @SerializedName("ID")
     @Column("ID")
     int id;
@@ -77,6 +85,31 @@ public class Vaccine {
     @Column("NOTE")
     String note;
 
+    public String getAlarmDate() {
+        return alarmDate;
+    }
+
+    public void setAlarmDate(String alarmDate) {
+        this.alarmDate = alarmDate;
+    }
+
+    @Column("ALARM_DATE")
+    String alarmDate;
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    @Column("MESSAGE")
+    String message;
+
     @Column("SELECTED")
     int isSelected;
+
+    @Column("READ")
+    int isRead;
 }
