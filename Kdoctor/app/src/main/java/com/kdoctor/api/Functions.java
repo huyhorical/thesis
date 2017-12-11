@@ -6,6 +6,7 @@ import com.kdoctor.models.Drug;
 import com.kdoctor.models.Sickness;
 import com.kdoctor.models.SicknessCategory;
 import com.kdoctor.models.Vaccine;
+import com.kdoctor.models.VaccineCenter;
 
 import java.util.HashMap;
 import java.util.List;
@@ -51,4 +52,7 @@ public interface Functions {
     public void postCode(@Path("category") String category, @Body HashMap<String, String> data, Callback<String> callback);
     @PUT("/api/{category}")
     public void putCode(@Path("category") String category, @Body HashMap<String, String> data, Callback<String> callback);
+
+    @GET("/api/DiaDiemTCAPI")
+    public void getVaccineCenter(@Query("bankinh") double radii, @Query("vido") double lat, @Query("kinhdo") double lon, Callback<List<VaccineCenter>> callback);
 }

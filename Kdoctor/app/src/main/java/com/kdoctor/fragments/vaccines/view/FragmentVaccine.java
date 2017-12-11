@@ -37,14 +37,18 @@ import com.kdoctor.api.RestServices;
 
 import com.kdoctor.bases.IView;
 import com.kdoctor.configuration.Kdoctor;
+import com.kdoctor.dialogs.CategoryDialog;
 import com.kdoctor.dialogs.DisplayTypeDialog;
+import com.kdoctor.dialogs.ProvinceDialog;
 import com.kdoctor.dialogs.QuestionDialog;
 import com.kdoctor.dialogs.TypeTextDateDialog;
 import com.kdoctor.dialogs.TypeTextDialog;
+import com.kdoctor.dialogs.VaccineMapDialog;
 import com.kdoctor.fragments.vaccines.adapters.RecyclerViewAdapterVaccine;
 import com.kdoctor.fragments.vaccines.presenter.FragmentVaccinePresenter;
 import com.kdoctor.fragments.vaccines.view.IFragmentVaccine;
 import com.kdoctor.models.Function;
+import com.kdoctor.models.SicknessCategory;
 import com.kdoctor.models.Vaccine;
 import com.kdoctor.services.VaccineService;
 import com.kdoctor.sql.DbManager;
@@ -56,6 +60,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -81,6 +86,8 @@ public class FragmentVaccine extends Fragment implements IFragmentVaccine{
     FloatingActionButton fabDisplayType;
     @BindView(R.id.fab_reminder)
     FloatingActionButton fabReminder;
+    @BindView(R.id.fab_map)
+    FloatingActionButton fabMap;
     @BindView(R.id.fab_birthday_filter)
     FloatingActionButton fabBirthdayFilter;
     @BindView(R.id.fl_label)
@@ -277,6 +284,23 @@ public class FragmentVaccine extends Fragment implements IFragmentVaccine{
                 datePickerDialog.show();
             }
         });
+
+        fabMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                List<SicknessCategory> categories = new ArrayList<>();
+                categories.add(new SicknessCategory(1,"Hà Nội", ""));
+                categories.add(new SicknessCategory(2,"Hồ Chí Minh", ""));
+                ProvinceDialog dialog = new ProvinceDialog(categories, new ProvinceDialog.OnAnswerListener() {
+                    @Override
+                    public void onAnswerListener(SicknessCategory answer) {
+                        VaccineMapDialog dialog = new VaccineMapDialog(answer.getId());
+                        dialog.show(getFragmentManager(), "");
+                    }
+                });
+                dialog.show(getFragmentManager(),"");
+            }
+        });
     }
 
     @Override
@@ -356,10 +380,10 @@ public class FragmentVaccine extends Fragment implements IFragmentVaccine{
 
         switch (status){
             case "OFF":
-                tvBirthdayFilter.setText("Lọc theo ngày sinh: Trống");
+                tvBirthdayFilter.setText("Gợi ý theo ngày sinh: Trống");
                 break;
             default:
-                tvBirthdayFilter.setText("Lọc theo ngày sinh: "+status);
+                tvBirthdayFilter.setText("Gợi ý theo ngày sinh: "+status);
                 Date date;
                 try {
                     date = (new SimpleDateFormat("dd/MM/yyyy")).parse(status);
