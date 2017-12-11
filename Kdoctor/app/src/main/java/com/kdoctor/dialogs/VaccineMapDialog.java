@@ -2,6 +2,7 @@ package com.kdoctor.dialogs;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
@@ -32,6 +33,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.kdoctor.R;
 import com.kdoctor.api.RestServices;
 import com.kdoctor.configuration.Kdoctor;
+import com.kdoctor.main.view.MainActivity;
 import com.kdoctor.models.VaccineCenter;
 
 import java.util.ArrayList;
@@ -66,7 +68,7 @@ public class VaccineMapDialog extends DialogFragment implements OnMapReadyCallba
     @SuppressLint("ValidFragment")
     public VaccineMapDialog(int provinceCode) {
         type = provinceCode;
-        switch (provinceCode){
+        switch (provinceCode) {
             case HANOI_CODE:
                 lat = 21.0228161;
                 lon = 105.8018581;
@@ -82,24 +84,24 @@ public class VaccineMapDialog extends DialogFragment implements OnMapReadyCallba
         }
     }
 
-    public List<VaccineCenter> provinceFilter(List<VaccineCenter> centers){
+    public List<VaccineCenter> provinceFilter(List<VaccineCenter> centers) {
         List<VaccineCenter> centerList = new ArrayList<>();
-        for (VaccineCenter center:centers
-             ) {
+        for (VaccineCenter center : centers
+                ) {
             String address = center.getAddress().toLowerCase();
-            switch (type){
+            switch (type) {
                 case HANOI_CODE:
-                    if (address.contains("hn") || address.contains("hà nội") || address.contains("ha noi")){
+                    if (address.contains("hn") || address.contains("hà nội") || address.contains("ha noi")) {
                         centerList.add(center);
                     }
                     break;
                 case HOCHIMINH_CODE:
-                    if (address.contains("hcm") || address.contains("hồ chí minh") || address.contains("ho chi minh")){
+                    if (address.contains("hcm") || address.contains("hồ chí minh") || address.contains("ho chi minh")) {
                         centerList.add(center);
                     }
                     break;
                 default:
-                    if (address.contains("hcm") || address.contains("hồ chí minh") || address.contains("ho chi minh")){
+                    if (address.contains("hcm") || address.contains("hồ chí minh") || address.contains("ho chi minh")) {
                         centerList.add(center);
                     }
                     break;
@@ -148,14 +150,26 @@ public class VaccineMapDialog extends DialogFragment implements OnMapReadyCallba
         googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                for (final VaccineCenter center:centers
-                     ) {
-                    if (center.getId() == Integer.parseInt(marker.getTag().toString())){
+                for (final VaccineCenter center : centers
+                        ) {
+                    if (center.getId() == Integer.parseInt(marker.getTag().toString())) {
                         content = "";
-                        if (center.getName() == null || center.getName().equals("")) {center.setName("Chưa cập nhật.");};
-                        if (center.getAddress() == null || center.getAddress().equals("")) {center.setAddress("Chưa cập nhật.");};
-                        if (center.getPhone() == null || center.getPhone().equals("")) {center.setPhone("Chưa cập nhật.");};
-                        if (center.getNote() == null || center.getNote().equals("")) {center.setNote("Chưa cập nhật.");};
+                        if (center.getName() == null || center.getName().equals("")) {
+                            center.setName("Chưa cập nhật.");
+                        }
+                        ;
+                        if (center.getAddress() == null || center.getAddress().equals("")) {
+                            center.setAddress("Chưa cập nhật.");
+                        }
+                        ;
+                        if (center.getPhone() == null || center.getPhone().equals("")) {
+                            center.setPhone("Chưa cập nhật.");
+                        }
+                        ;
+                        if (center.getNote() == null || center.getNote().equals("")) {
+                            center.setNote("Chưa cập nhật.");
+                        }
+                        ;
                         content += "<b>" + center.getName() + "</b><br/>";
                         content += "Địa chỉ: " + center.getAddress() + "<br/>";
                         content += "Điện thoại liên hệ: " + center.getPhone() + "<br/>";
@@ -175,18 +189,45 @@ public class VaccineMapDialog extends DialogFragment implements OnMapReadyCallba
             }
         });
 
+        addMarkers();
+
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(lat, lon), 12);
         googleMap.moveCamera(cameraUpdate);
 
-        if (ActivityCompat.checkSelfPermission(Kdoctor.getInstance().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(Kdoctor.getInstance().getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            //huy here
-            return;
+        try {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                    1);
         }
+        catch (Exception e){
 
-        googleMap.setMyLocationEnabled(true);
+        }
         //googleMap.animateCamera(CameraUpdateFactory.zoomTo(12), 1000, null);
+    }
 
-        addMarkers();
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        try {
+            switch (requestCode) {
+                case 1: {
+                    if (grantResults.length > 0
+                            && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                            && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                            googleMap.setMyLocationEnabled(true);
+                            return;
+                        }
+                    } else {
+
+                    }
+                    return;
+                }
+            }
+        }
+        catch (Exception e){
+
+        }
     }
 
     public void addMarkers(){

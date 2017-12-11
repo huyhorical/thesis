@@ -56,7 +56,7 @@ public class CategoryDialog extends DialogFragment{
         View rootView = inflater.inflate(R.layout.dialog_fragment_sickness_question, null);
         ButterKnife.bind(this, rootView);
 
-        tvQuestion.setText("Vui lòng chọn chuyên mục liên quan:");
+        tvQuestion.setText("Triệu chứng mà trẻ gặp như thế nào?");
 
         rvAnswers.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new CategoriesAdapter(categories, new CategoriesAdapter.OnItemClickListener() {

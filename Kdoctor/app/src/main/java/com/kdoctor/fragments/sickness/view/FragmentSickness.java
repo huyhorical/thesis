@@ -268,7 +268,13 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
         fabInvestigate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CategoryDialog dialog = new CategoryDialog(categories, new CategoryDialog.OnAnswerListener() {
+                //huy
+                List<SicknessCategory> sicknessCategories = new ArrayList<SicknessCategory>(categories);
+                if (sicknessCategories.get(0) != null){ sicknessCategories.get(0).setName("Trẻ hô hấp biểu hiện bất thường"); };
+                if (sicknessCategories.get(1) != null){ sicknessCategories.get(1).setName("Da của trẻ có sự khác lạ"); };
+                if (sicknessCategories.get(2) != null){ sicknessCategories.get(2).setName("Những triệu chứng khác"); };
+                //huy
+                CategoryDialog dialog = new CategoryDialog(sicknessCategories, new CategoryDialog.OnAnswerListener() {
                     @Override
                     public void onAnswerListener(SicknessCategory answer) {
                         code = answer.getName() + "*";
@@ -404,7 +410,13 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
 
             @Override
             public void onAddNew() {
-                CategoryDialog categoryDialog = new CategoryDialog(categories, new CategoryDialog.OnAnswerListener() {
+                //huy
+                List<SicknessCategory> sicknessCategories = new ArrayList<SicknessCategory>(categories);
+                if (sicknessCategories.get(0) != null){ sicknessCategories.get(0).setName("Trẻ hô hấp biểu hiện bất thường"); };
+                if (sicknessCategories.get(1) != null){ sicknessCategories.get(1).setName("Da của trẻ có sự khác lạ"); };
+                if (sicknessCategories.get(2) != null){ sicknessCategories.get(2).setName("Những triệu chứng khác"); };
+                //huy
+                CategoryDialog categoryDialog = new CategoryDialog(sicknessCategories, new CategoryDialog.OnAnswerListener() {
                     @Override
                     public void onAnswerListener(final SicknessCategory answer) {
                         RestServices.getInstance().getServices().getCodeItems(answer.getAction(), new Callback<List<CodeItem>>() {
@@ -558,6 +570,13 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
     public void onGetCategoriesSuccess(List<SicknessCategory> categories) {
         this.categories.clear();
         this.categories.addAll(categories);
+/*
+        //huy
+        if (categories.get(0) != null){ categories.get(0).setName("Trẻ xuất hiện những biểu hiện bất thường về hô hấp"); };
+        if (categories.get(1) != null){ categories.get(1).setName("Da của trẻ có sự khác thường"); };
+        if (categories.get(2) != null){ categories.get(2).setName("Những biểu hiện khác"); };
+        //huy
+*/
         adapter.notifyDataSetChanged();
         hideLoading();
     }
