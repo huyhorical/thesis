@@ -122,8 +122,8 @@ public class DbManager extends SQLiteOpenHelper {
             query = "create table " + FUNCTIONS + " ("
                     + "TAB text,"
                     + "FUNCTION text, "
-                    + "STATUS text," +
-                    "PRIMARY KEY (TAB, FUNCTION))";
+                    + "STATUS text,"
+                    + "PRIMARY KEY (TAB, FUNCTION))";
             db.execSQL(query);
 
             List<Function> functions = new ArrayList<Function>();

@@ -85,6 +85,8 @@ public class FragmentDrug extends Fragment implements IFragmentDrug{
         return rootView;
     }
 
+    boolean isWaiting = false;
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -156,6 +158,11 @@ public class FragmentDrug extends Fragment implements IFragmentDrug{
         fabHeart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (isWaiting){
+                    return;
+                }
+                isWaiting = true;
+
                 List<Drug> drugs = DbManager.getInstance(getContext()).getRecords(DbManager.DRUGS, Drug.class);
                 if (drugs != null){
                     for (int i = drugs.size() - 1; i >= 0; i--){
@@ -184,12 +191,19 @@ public class FragmentDrug extends Fragment implements IFragmentDrug{
                     }
                 });
                 dialog.show(getFragmentManager(), "");
+
+                isWaiting = false;
             }
         });
 
         fabFind.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (isWaiting){
+                    return;
+                }
+                isWaiting = true;
+
                 final TypeDrugInfoDialog dialog = new TypeDrugInfoDialog("Nhập tên thuốc", new TypeDrugInfoDialog.OnClickListener() {
                     @Override
                     public void onPositiveButtonClickListener(String value) {
@@ -236,6 +250,8 @@ public class FragmentDrug extends Fragment implements IFragmentDrug{
                     }
                 });
                 dialog.show(getFragmentManager(), "");
+
+                isWaiting = false;
             }
         });
     }

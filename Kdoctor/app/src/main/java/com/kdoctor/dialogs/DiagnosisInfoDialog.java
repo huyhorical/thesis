@@ -76,6 +76,8 @@ public class DiagnosisInfoDialog extends DialogFragment{
         rvDiagnosisItem.setAdapter(adapter);
         rvDiagnosisItem.setHasFixedSize(false);
 
+        tvSicknessName.setText("Dự đoán: " + diagnosis.getResult());
+
         builder.setTitle("Kdoctor chuẩn đoán");
         builder.setView(rootView);
 

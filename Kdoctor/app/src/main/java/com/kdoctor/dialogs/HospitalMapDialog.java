@@ -52,7 +52,7 @@ import retrofit.client.Response;
  */
 
 @SuppressLint("ValidFragment")
-public class VaccineMapDialog extends DialogFragment implements OnMapReadyCallback {
+public class HospitalMapDialog extends DialogFragment implements OnMapReadyCallback {
 
     public final static int HANOI_CODE = 1;
     public final static int HOCHIMINH_CODE = 2;
@@ -74,7 +74,7 @@ public class VaccineMapDialog extends DialogFragment implements OnMapReadyCallba
     MapView mapView;
 
     @SuppressLint("ValidFragment")
-    public VaccineMapDialog(int provinceCode) {
+    public HospitalMapDialog(int provinceCode) {
         dialog = this;
         type = provinceCode;
         switch (provinceCode) {
@@ -98,7 +98,7 @@ public class VaccineMapDialog extends DialogFragment implements OnMapReadyCallba
                 final double latitude = location.getLatitude();
                 final double longitude = location.getLongitude();
 
-                RestServices.getInstance().getServices().getNearestVaccineCenter(latitude, longitude, new Callback<VaccineCenter>() {
+                RestServices.getInstance().getServices().getNearestHospital(latitude, longitude, new Callback<VaccineCenter>() {
                     @Override
                     public void success(VaccineCenter vaccineCenter, Response response) {
                         markNearest(vaccineCenter);
@@ -137,28 +137,28 @@ public class VaccineMapDialog extends DialogFragment implements OnMapReadyCallba
             if (vaccineCenter != null) {
                 if (marker.getTag().toString().equals(Integer.toString(vaccineCenter.getId()))) {
                     try {
-                        marker.setIcon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("icon_vaccine_station_nearest", dpToPx(32), dpToPx(32))));
+                        marker.setIcon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("icon_nearest_hospital", dpToPx(32), dpToPx(32))));
                     }
-                        catch (Exception e){
-                            marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.icon_vaccine_station_nearest));
-                        }
-                        marker.setZIndex(10);
+                    catch (Exception e){
+                        marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.icon_nearest_hospital));
+                    }
+                    marker.setZIndex(10);
                 }
                 else {
                     try {
-                    marker.setIcon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("icon_vaccine_map", dpToPx(32), dpToPx(32))));
+                        marker.setIcon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("icon_hospital", dpToPx(32), dpToPx(32))));
                     }
                     catch (Exception e){
-                        marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.icon_vaccine_map));
+                        marker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.icon_hospital));
                     }
                 }
             }
         }
     }
 
-    private static VaccineMapDialog dialog;
+    private static HospitalMapDialog dialog;
 
-    public static VaccineMapDialog getInstance() {
+    public static HospitalMapDialog getInstance() {
         return dialog;
     }
 
@@ -290,7 +290,7 @@ public class VaccineMapDialog extends DialogFragment implements OnMapReadyCallba
     List<Marker> markers = new ArrayList<>();
 
     public void addMarkers() {
-        RestServices.getInstance().getServices().getVaccineCenter(100.0, lat, lon, new Callback<List<VaccineCenter>>() {
+        RestServices.getInstance().getServices().getHospital(100.0, lat, lon, new Callback<List<VaccineCenter>>() {
             @Override
             public void success(List<VaccineCenter> vaccineCenters, Response response) {
                 List<VaccineCenter> filterdCenters = provinceFilter(vaccineCenters);
@@ -300,12 +300,12 @@ public class VaccineMapDialog extends DialogFragment implements OnMapReadyCallba
                     LatLng latLng = new LatLng(center.getLat(), center.getLon());
                     markerOptions.position(latLng);
                     try {
-                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("icon_vaccine_map", dpToPx(32), dpToPx(32))));
+                        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("icon_hospital", dpToPx(32), dpToPx(32))));
                     }
                     catch (Exception e){
-                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_vaccine_map));
+                        markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.icon_hospital));
                     }
-                        Marker marker = googleMap.addMarker(markerOptions);
+                    Marker marker = googleMap.addMarker(markerOptions);
                     marker.setTag(center.getId());
                     markers.add(marker);
                 }
@@ -313,9 +313,9 @@ public class VaccineMapDialog extends DialogFragment implements OnMapReadyCallba
                 try {
                     findNearestCenter();
                 }
-                    catch (Exception e){
+                catch (Exception e){
 
-                    }
+                }
             }
 
             @Override
@@ -344,7 +344,7 @@ public class VaccineMapDialog extends DialogFragment implements OnMapReadyCallba
                 final double latitude = location.getLatitude();
                 final double longitude = location.getLongitude();
 
-                RestServices.getInstance().getServices().getNearestVaccineCenter(latitude, longitude, new Callback<VaccineCenter>() {
+                RestServices.getInstance().getServices().getNearestHospital(latitude, longitude, new Callback<VaccineCenter>() {
                     @Override
                     public void success(VaccineCenter vaccineCenter, Response response) {
                         markNearest(vaccineCenter);
@@ -417,7 +417,7 @@ public class VaccineMapDialog extends DialogFragment implements OnMapReadyCallba
             mapView.onDestroy();
 
         try {
-        locationManager.removeUpdates(locationListener);
+            locationManager.removeUpdates(locationListener);
         }
         catch (Exception e){
 

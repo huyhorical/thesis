@@ -3,13 +3,13 @@
         id="@+id/tab_sickness"
         icon="@drawable/tab_icon_sickness"
         title="Bệnh trẻ em"
-        barColorWhenSelected="#FF0000"
+        barColorWhenSelected="#F44336"
         />
     <tab
         id="@+id/tab_drug"
         icon="@drawable/tab_icon_drug"
         title="Các loại thuốc"
-        barColorWhenSelected="#00FF00"
+        barColorWhenSelected="#4CAF50"
         />
     <tab
         id="@+id/tab_vaccine"

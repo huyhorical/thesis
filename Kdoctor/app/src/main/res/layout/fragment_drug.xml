@@ -21,7 +21,7 @@
         android:layout_marginBottom="15dp"
         android:layout_marginRight="15dp"
         sothree:fab_expandDirection="up"
-        sothree:fab_addButtonColorNormal="#0f0"
+        sothree:fab_addButtonColorNormal="#4CAF50"
         sothree:fab_addButtonColorPressed="#0ff"
         sothree:fab_addButtonSize="normal"
         >
@@ -32,7 +32,7 @@
             sothree:fab_size="mini"
             sothree:fab_icon="@drawable/icon_find"
             sothree:fab_colorPressed="#0ff"
-            sothree:fab_colorNormal="#0f0"
+            sothree:fab_colorNormal="#4CAF50"
             />
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_heart"
@@ -41,7 +41,7 @@
             sothree:fab_size="mini"
             sothree:fab_icon="@drawable/icon_selected"
             sothree:fab_colorPressed="#0ff"
-            sothree:fab_colorNormal="#0f0"
+            sothree:fab_colorNormal="#4CAF50"
             />
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
@@ -60,7 +60,7 @@
             android:layout_marginEnd="90dp"
             android:layout_marginBottom="175dp"
             android:background="#CCFFFFFF"
-            android:textColor="#0f0"
+            android:textColor="#4CAF50"
             android:padding="2dp"
             />
         <TextView
@@ -71,7 +71,7 @@
             android:layout_marginEnd="90dp"
             android:layout_marginBottom="113dp"
             android:background="#CCFFFFFF"
-            android:textColor="#0f0"
+            android:textColor="#4CAF50"
             android:padding="2dp"
             />
     </FrameLayout>

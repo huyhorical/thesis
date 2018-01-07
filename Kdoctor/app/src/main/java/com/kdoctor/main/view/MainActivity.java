@@ -1,9 +1,13 @@
 package com.kdoctor.main.view;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
@@ -20,7 +24,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kdoctor.R;
+import com.kdoctor.dialogs.GuideDialog;
 import com.kdoctor.dialogs.QuestionDialog;
+import com.kdoctor.dialogs.VaccineMapDialog;
 import com.kdoctor.fragments.drawer.view.FragmentDrawer;
 import com.kdoctor.fragments.drugs.view.FragmentDrug;
 import com.kdoctor.fragments.sickness.view.FragmentSickness;
@@ -42,6 +48,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.kdoctor.dialogs.VaccineMapDialog.MY_PERMISSIONS_REQUEST_LOCATION;
 
 public class MainActivity extends AppCompatActivity implements IMainActivity {
 
@@ -66,6 +74,8 @@ public class MainActivity extends AppCompatActivity implements IMainActivity {
     TextView tvCategory;
     @BindView(R.id.iv_drawer)
     ImageView ivDrawer;
+    @BindView(R.id.iv_guide)
+    ImageView ivGuide;
 
     List<Fragment> lstFragments;
     List<Fragment> lstRestoredFragments;
@@ -126,6 +136,13 @@ public class MainActivity extends AppCompatActivity implements IMainActivity {
     }
 
     void initEventListeners(){
+        ivGuide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GuideDialog dialog = new GuideDialog();
+                dialog.show(getSupportFragmentManager(), "");
+            }
+        });
         ivDrawer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -211,7 +228,8 @@ public class MainActivity extends AppCompatActivity implements IMainActivity {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                FragmentDrawer.getInstance().getAdapter().setDiagnoses(DbManager.getInstance(getApplicationContext()).getRecords(DbManager.DIAGNOSIS, Diagnosis.class));
+                List<Diagnosis> diagnoses = DbManager.getInstance(getApplicationContext()).getRecords(DbManager.DIAGNOSIS, Diagnosis.class);
+                FragmentDrawer.getInstance().getAdapter().setDiagnoses(diagnoses);
                 FragmentDrawer.getInstance().getAdapter().notifyDataSetChanged();
             }
         };
@@ -243,5 +261,25 @@ public class MainActivity extends AppCompatActivity implements IMainActivity {
     protected void onDestroy() {
         super.onDestroy();
         //DbManager.getInstance(getApplicationContext()).close();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_LOCATION: {
+                try {
+                    if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                        return;
+                    }
+                    if (VaccineMapDialog.getInstance() != null){
+                        VaccineMapDialog.getInstance().getGoogleMap().setMyLocationEnabled(true);
+                        VaccineMapDialog.getInstance().findNearestCenter();
+                    }
+                } catch (Exception e) {
+
+                }
+            }
+        }
     }
 }

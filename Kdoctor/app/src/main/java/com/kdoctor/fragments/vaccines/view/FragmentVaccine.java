@@ -108,6 +108,8 @@ public class FragmentVaccine extends Fragment implements IFragmentVaccine{
         return rootView;
     }
 
+    boolean isWaiting = false;
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -188,6 +190,11 @@ public class FragmentVaccine extends Fragment implements IFragmentVaccine{
         fabDisplayType.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (isWaiting){
+                    return;
+                }
+                isWaiting = true;
+
                 String status = "";
                 List<Function> functions = DbManager.getInstance(null).getRecords(DbManager.FUNCTIONS, Function.class);
                 for (Function function :
@@ -217,6 +224,8 @@ public class FragmentVaccine extends Fragment implements IFragmentVaccine{
                     }
                 });
                 displayTypeDialog.show(getFragmentManager(), "");
+
+                isWaiting = false;
             }
         });
 
@@ -227,6 +236,11 @@ public class FragmentVaccine extends Fragment implements IFragmentVaccine{
         fabReminder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (isWaiting){
+                    return;
+                }
+                isWaiting = true;
+
                 if (VaccineService.isRunning()) {
                     VaccineService.setIsRunning(false);
                     tvReminder.setText("Nhắc nhở: Tắt");
@@ -238,12 +252,19 @@ public class FragmentVaccine extends Fragment implements IFragmentVaccine{
                     getActivity().startService(new Intent(getActivity().getBaseContext(), VaccineService.class));
                     tvReminder.setText("Nhắc nhở: Bật");
                 }
+
+                isWaiting = false;
             }
         });
 
         fabBirthdayFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (isWaiting){
+                    return;
+                }
+                isWaiting = true;
+
                 Calendar calendar = Calendar.getInstance();
                 DatePickerDialog datePickerDialog = new DatePickerDialog(getActivity(), new DatePickerDialog.OnDateSetListener() {
                     @Override
@@ -282,12 +303,27 @@ public class FragmentVaccine extends Fragment implements IFragmentVaccine{
                 });
 
                 datePickerDialog.show();
+
+                isWaiting = false;
             }
         });
 
         fabMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (isWaiting){
+                    return;
+                }
+                isWaiting = true;
+
+                try {
+                    Toast.makeText(getActivity().getApplicationContext(), "Hiện tại chỉ hỗ trợ tại khu vực TP HCM...", Toast.LENGTH_SHORT).show();
+                }
+                catch (Exception e){
+
+                }
+
+                /*
                 List<SicknessCategory> categories = new ArrayList<>();
                 categories.add(new SicknessCategory(1,"Hà Nội", ""));
                 categories.add(new SicknessCategory(2,"Hồ Chí Minh", ""));
@@ -299,6 +335,11 @@ public class FragmentVaccine extends Fragment implements IFragmentVaccine{
                     }
                 });
                 dialog.show(getFragmentManager(),"");
+                */
+                VaccineMapDialog dialog = new VaccineMapDialog(2);
+                dialog.show(getFragmentManager(), "");
+
+                isWaiting = false;
             }
         });
     }

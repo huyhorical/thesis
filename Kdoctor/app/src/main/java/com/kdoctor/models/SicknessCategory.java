@@ -44,6 +44,19 @@ public class SicknessCategory {
     @SerializedName("TEN")
     @Column("NAME")
     String name;
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    @SerializedName("DESCRIPTION")
+    @Column("DESCRIPTION")
+    String description;
+
     @SerializedName("LINK")
     @Column("URL")
     String urlAPI;
@@ -83,4 +96,5 @@ public class SicknessCategory {
     @SerializedName("ACTIONNAME")
     @Column("ACTION")
     String action;
+
 }

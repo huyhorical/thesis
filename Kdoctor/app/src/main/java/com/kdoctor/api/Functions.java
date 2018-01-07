@@ -55,4 +55,11 @@ public interface Functions {
 
     @GET("/api/DiaDiemTCAPI")
     public void getVaccineCenter(@Query("bankinh") double radii, @Query("vido") double lat, @Query("kinhdo") double lon, Callback<List<VaccineCenter>> callback);
+    @GET("/api/DiaDiemTCAPI")
+    public void getNearestVaccineCenter(@Query("vido") double lat, @Query("kinhdo") double lon, Callback<VaccineCenter> callback);
+
+    @GET("/api/BVNhiAPI")
+    public void getHospital(@Query("bankinh") double radii, @Query("vido") double lat, @Query("kinhdo") double lon, Callback<List<VaccineCenter>> callback);
+    @GET("/api/BVNhiAPI")
+    public void getNearestHospital(@Query("vido") double lat, @Query("kinhdo") double lon, Callback<VaccineCenter> callback);
 }

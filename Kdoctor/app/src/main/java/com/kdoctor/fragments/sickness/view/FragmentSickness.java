@@ -34,6 +34,8 @@ import com.kdoctor.dialogs.CategoryDialog;
 import com.kdoctor.dialogs.CodeDetailsDialog;
 import com.kdoctor.dialogs.CodeDialog;
 import com.kdoctor.dialogs.DeleteDialog;
+import com.kdoctor.dialogs.HospitalMapDialog;
+import com.kdoctor.dialogs.ProvinceDialog;
 import com.kdoctor.dialogs.QuestionDialog;
 import com.kdoctor.dialogs.SicknessInfoDialog;
 import com.kdoctor.dialogs.SicknessQuestionDialog;
@@ -59,6 +61,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -82,6 +85,8 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
     FloatingActionButton fabInvestigate;
     @BindView(R.id.fab_status)
     FloatingActionButton fabStatus;
+    @BindView(R.id.fab_map)
+    FloatingActionButton fabMap;
     @BindView(R.id.fl_label)
     FrameLayout flLabel;
     @BindView(R.id.fam)
@@ -219,6 +224,8 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
 
     }
 
+    boolean isWaiting = false;
+
     void initListeners(){
         fam.setOnFloatingActionsMenuUpdateListener(new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
             @Override
@@ -235,6 +242,11 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
         fabHeart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (isWaiting){
+                    return;
+                }
+                isWaiting = true;
+
                 List<Sickness> sicknesses = DbManager.getInstance(getContext()).getRecords(DbManager.SICKNESSES, Sickness.class);
                 if (sicknesses != null){
                     for (int i = sicknesses.size() - 1; i >= 0; i--){
@@ -262,32 +274,42 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
                     }
                 });
                 dialog.show(getFragmentManager(), "");
+
+                isWaiting = false;
             }
         });
 
         fabInvestigate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //huy
-                List<SicknessCategory> sicknessCategories = new ArrayList<SicknessCategory>(categories);
-                if (sicknessCategories.get(0) != null){ sicknessCategories.get(0).setName("Trẻ hô hấp biểu hiện bất thường"); };
-                if (sicknessCategories.get(1) != null){ sicknessCategories.get(1).setName("Da của trẻ có sự khác lạ"); };
-                if (sicknessCategories.get(2) != null){ sicknessCategories.get(2).setName("Những triệu chứng khác"); };
-                //huy
-                CategoryDialog dialog = new CategoryDialog(sicknessCategories, new CategoryDialog.OnAnswerListener() {
+                if (isWaiting){
+                    return;
+                }
+                isWaiting = true;
+
+                CategoryDialog dialog = new CategoryDialog(categories, new CategoryDialog.OnAnswerListener() {
                     @Override
                     public void onAnswerListener(SicknessCategory answer) {
                         code = answer.getName() + "*";
+                        code += "Triệu chứng mà trẻ gặp như thế nào?|";
+                        code += "C="+answer.getDescription()+"*";
                         callQuestion(answer.getUrlAPI(), "S");
                     }
                 });
                 dialog.show(getFragmentManager(),"");
+
+                isWaiting = false;
             }
         });
 
         fabFind.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (isWaiting){
+                    return;
+                }
+                isWaiting = true;
+
                 TypeInfoDialog dialog = new TypeInfoDialog("Nhập tên bệnh", new TypeInfoDialog.OnClickListener() {
                     @Override
                     public void onPositiveButtonClickListener(String value) {
@@ -334,16 +356,61 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
                     }
                 });
                 dialog.show(getFragmentManager(), "");
+
+                isWaiting = false;
             }
         });
 
         fabStatus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (isWaiting){
+                    return;
+                }
+                isWaiting = true;
+
                 openCodeDialog();
+
+                isWaiting = false;
+            }
+        });
+
+        fabMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isWaiting){
+                    return;
+                }
+                isWaiting = true;
+
+                try {
+                    Toast.makeText(getActivity().getApplicationContext(), "Hiện tại chỉ hỗ trợ tại khu vực TP HCM...", Toast.LENGTH_SHORT).show();
+                }
+                catch (Exception e){
+
+                }
+
+                /*
+                List<SicknessCategory> categories = new ArrayList<>();
+                categories.add(new SicknessCategory(1,"Hà Nội", ""));
+                categories.add(new SicknessCategory(2,"Hồ Chí Minh", ""));
+                ProvinceDialog dialog = new ProvinceDialog(categories, new ProvinceDialog.OnAnswerListener() {
+                    @Override
+                    public void onAnswerListener(SicknessCategory answer) {
+                        HospitalMapDialog dialog = new HospitalMapDialog(answer.getId());
+                        dialog.show(getFragmentManager(), "");
+                    }
+                });
+                dialog.show(getFragmentManager(),"");
+                */
+                HospitalMapDialog dialog = new HospitalMapDialog(2);
+                dialog.show(getFragmentManager(), "");
+
+                isWaiting = false;
             }
         });
     }
+
 
     void openCodeDialog(){
         List<Code> codesFromDB = DbManager.getInstance(getContext()).getRecords(DbManager.CODES, Code.class);
@@ -410,13 +477,7 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
 
             @Override
             public void onAddNew() {
-                //huy
-                List<SicknessCategory> sicknessCategories = new ArrayList<SicknessCategory>(categories);
-                if (sicknessCategories.get(0) != null){ sicknessCategories.get(0).setName("Trẻ hô hấp biểu hiện bất thường"); };
-                if (sicknessCategories.get(1) != null){ sicknessCategories.get(1).setName("Da của trẻ có sự khác lạ"); };
-                if (sicknessCategories.get(2) != null){ sicknessCategories.get(2).setName("Những triệu chứng khác"); };
-                //huy
-                CategoryDialog categoryDialog = new CategoryDialog(sicknessCategories, new CategoryDialog.OnAnswerListener() {
+                CategoryDialog categoryDialog = new CategoryDialog(categories, new CategoryDialog.OnAnswerListener() {
                     @Override
                     public void onAnswerListener(final SicknessCategory answer) {
                         RestServices.getInstance().getServices().getCodeItems(answer.getAction(), new Callback<List<CodeItem>>() {

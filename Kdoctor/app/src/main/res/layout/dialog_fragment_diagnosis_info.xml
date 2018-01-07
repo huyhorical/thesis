@@ -23,7 +23,7 @@
             android:layout_below="@+id/rv_diagnosis_item"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:background="#FF0000"
+            android:background="#F44336"
             >
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -34,7 +34,7 @@
                     android:id="@+id/tv_sickness_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Kết luận: Cảm cúm"
+                    android:text="Dự đoán: Cảm cúm"
                     android:textSize="18dp"
                     android:textStyle="bold"
                     android:textColor="#FFFFFF"

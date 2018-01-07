@@ -112,7 +112,7 @@ public class CategoryDialog extends DialogFragment{
 
         @Override
         public void onBindViewHolder(final CategoryViewHolder holder, final int position) {
-            final String answer = categories.get(position).getName();
+            final String answer = categories.get(position).getDescription();
             holder.tvAnswer.setText(answer);
             holder.llItem.setOnClickListener(new View.OnClickListener() {
                 @Override

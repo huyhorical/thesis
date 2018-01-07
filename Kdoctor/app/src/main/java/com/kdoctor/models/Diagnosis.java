@@ -62,14 +62,17 @@ public class Diagnosis {
 
     public void init(){
         if (code != null && code != ""){
+            if (itemList == null) {
+                itemList = new ArrayList<>();
+            }
+            else{
+                itemList.clear();
+            }
             String[] arr = code.split("\\*");
             String categoryName = arr[0];
             String resultID = arr[arr.length-1];
 
             for (int i = 1; i < arr.length - 1; i++){
-                if (itemList == null) {
-                    itemList = new ArrayList<>();
-                }
                 Item item = new Item();
                 item.setQuestion(arr[i].split(Pattern.quote("|"))[0]);
                 item.setAnswer(arr[i].split(Pattern.quote("|"))[1].split("=")[1]);
