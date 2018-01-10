@@ -47,6 +47,10 @@ public class Question {
     String questionContaint;
     List<String> answers;
 
+    public Question(){
+
+    }
+
     public Question(String data){
         try {
             data.replace("\"", "");
@@ -54,7 +58,8 @@ public class Question {
             questionId = values[0];
             values = values[1].split("@");
             questionTitle = values[0].split(":")[0];
-            questionContaint = values[0].split(":")[1];
+            //questionContaint = values[0].split(":")[1];
+            questionContaint = values[0].replace(values[0].split(":")[0],"");
             answers = new ArrayList<String>();
             for (int i = 1; i < values.length; i++) {
                 answers.add(values[i]);

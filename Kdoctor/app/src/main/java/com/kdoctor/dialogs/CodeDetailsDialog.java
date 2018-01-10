@@ -14,6 +14,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -24,17 +25,25 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kdoctor.R;
+import com.kdoctor.api.RestServices;
 import com.kdoctor.configuration.Kdoctor;
 import com.kdoctor.custom.SpinnerPlus;
 import com.kdoctor.models.Code;
 import com.kdoctor.models.CodeItem;
 import com.kdoctor.models.CodeItemGet;
+import com.kdoctor.models.Question;
+import com.kdoctor.models.Sickness;
+import com.kdoctor.sql.DbManager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by Huy on 10/30/2017.
@@ -48,8 +57,8 @@ public class CodeDetailsDialog extends DialogFragment{
 
     @BindView(R.id.rv_items)
     RecyclerView rvItems;
-    @BindView(R.id.edt_note)
-    EditText edtNote;
+    @BindView(R.id.tv_note)
+    TextView tvNote;
 
     CodeItemAdapter adapter;
     OnCall onCall;
@@ -108,7 +117,57 @@ public class CodeDetailsDialog extends DialogFragment{
             edtNote.setText(itemGet.getNote());
         }
 */
-        edtNote.setText("Có "+ ((code == null || code.getSicknesses() == null) ? "0" : code.getSicknesses().size())+" kết quả tham khảo.");
+        int totalSickness = (code == null || code.getSicknesses() == null) ? 0 : code.getSicknesses().size();
+        tvNote.setText("Có "+ totalSickness+" kết quả tham khảo.");
+
+        if (totalSickness > 0 && !code.getSicknesses().get(0).equals("0")){
+            tvNote.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Question question = new Question();
+                    question.setQuestionContaint("Danh sách gợi ý:");
+                    question.setAnswers(code.getSicknesses());
+
+                    SicknessQuestionDialog dialog = new SicknessQuestionDialog(question, new SicknessQuestionDialog.OnAnswerListener() {
+                        @Override
+                        public void onAnswerListener(String value) {
+                            try{
+                                value = value.split("=")[1];
+                            }
+                            catch (Exception e){
+
+                            }
+                            //Log.i("huy",""+value);
+                            RestServices.getInstance().getServices().searchSickness(value, new Callback<List<Sickness>>() {
+                                @Override
+                                public void success(List<Sickness> sicknesses, Response response) {
+                                    if (sicknesses.size() > 0){
+                                        SicknessInfoDialog infoDialog = new SicknessInfoDialog(sicknesses.get(0), new SicknessInfoDialog.OnClickListener() {
+                                            @Override
+                                            public void onSelectListener(Sickness sickness, boolean isSelected) {
+                                                sickness.setSelected(isSelected);
+                                                DbManager.getInstance(getContext()).selectRecord(DbManager.SICKNESSES, sickness, sickness.getId());
+                                            }
+                                        });
+                                        infoDialog.show(getFragmentManager(),"");
+                                    }
+                                    else{
+                                        Toast.makeText(Kdoctor.getInstance().getApplicationContext(), "Dữ liệu về bệnh này chưa được cập nhật.", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void failure(RetrofitError error) {
+                                    Toast.makeText(Kdoctor.getInstance().getApplicationContext(), "Lỗi kết nối.", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+                    });
+                    dialog.show(getFragmentManager(),"");
+                }
+            });
+        }
+
         builder.setTitle("Danh sách triệu chứng...");
         builder.setView(rootView);
 
@@ -116,10 +175,10 @@ public class CodeDetailsDialog extends DialogFragment{
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (type != UPDATE){
-                    onCall.onCreate(items, edtNote.getText().toString());
+                    onCall.onCreate(items, tvNote.getText().toString());
                 }
                 else{
-                    onCall.onUpdate(items, edtNote.getText().toString(), ID, code.getCategotyDataPath());
+                    onCall.onUpdate(items, tvNote.getText().toString(), ID, code.getCategotyDataPath());
                 }
             }
         });
@@ -181,7 +240,15 @@ public class CodeDetailsDialog extends DialogFragment{
             holder.edtType.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    holder.edtType.setText("");
+                    //holder.edtType.setText("");
+                    //holder.spnItem.performClick();
+                }
+            });
+            holder.edtType.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    holder.spnItem.performClick();
+                    return false;
                 }
             });
 
@@ -224,7 +291,9 @@ public class CodeDetailsDialog extends DialogFragment{
                 for (CodeItemGet.ItemGet i:itemGet.getItemGetList()
                         ) {
                     if (i.getPrognostic().equals(item.getPrognostic())){
-                        holder.edtType.setText(i.getAnswer());
+                        if (!i.getAnswer().equals("Không")) {
+                            holder.edtType.setText(i.getAnswer());
+                        }
                         break;
                     }
                 }

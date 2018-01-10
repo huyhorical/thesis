@@ -17,13 +17,17 @@ import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kdoctor.R;
 import com.kdoctor.api.RestServices;
+import com.kdoctor.configuration.Kdoctor;
 import com.kdoctor.models.Diagnosis;
 import com.kdoctor.models.Sickness;
 import com.kdoctor.models.SicknessCategory;
+import com.kdoctor.sql.DbManager;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -48,6 +52,10 @@ public class DiagnosisInfoDialog extends DialogFragment{
     TextView tvSicknessName;
     @BindView(R.id.tv_date)
     TextView tvDate;
+    @BindView(R.id.rl)
+    RelativeLayout rl;
+    @BindView(R.id.tv_category_des)
+    TextView tvCategoryDes;
 
     ItemAdapter adapter;
 
@@ -77,6 +85,37 @@ public class DiagnosisInfoDialog extends DialogFragment{
         rvDiagnosisItem.setHasFixedSize(false);
 
         tvSicknessName.setText("Dự đoán: " + diagnosis.getResult());
+        tvCategoryDes.setText("(Chuyên mục: "+diagnosis.getCategoryName()+")");
+        tvDate.setText("Vào lúc " + diagnosis.getDate());
+
+        rl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RestServices.getInstance().getServices().searchSickness(diagnosis.getResult(), new Callback<List<Sickness>>() {
+                    @Override
+                    public void success(List<Sickness> sicknesses, Response response) {
+                        if (sicknesses.size() > 0){
+                            SicknessInfoDialog infoDialog = new SicknessInfoDialog(sicknesses.get(0), new SicknessInfoDialog.OnClickListener() {
+                                @Override
+                                public void onSelectListener(Sickness sickness, boolean isSelected) {
+                                    sickness.setSelected(isSelected);
+                                    DbManager.getInstance(getContext()).selectRecord(DbManager.SICKNESSES, sickness, sickness.getId());
+                                }
+                            });
+                            infoDialog.show(getFragmentManager(),"");
+                        }
+                        else{
+                            Toast.makeText(Kdoctor.getInstance().getApplicationContext(), "Dữ liệu về bệnh này chưa được cập nhật.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void failure(RetrofitError error) {
+                        Toast.makeText(Kdoctor.getInstance().getApplicationContext(), "Lỗi kết nối.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
 
         builder.setTitle("Kdoctor chuẩn đoán");
         builder.setView(rootView);

@@ -51,6 +51,12 @@ public class Diagnosis {
 
     List<Item> itemList;
 
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    String categoryName = "";
+
     @Column("ID")
     int id;
     @Column("CODE")
@@ -69,7 +75,7 @@ public class Diagnosis {
                 itemList.clear();
             }
             String[] arr = code.split("\\*");
-            String categoryName = arr[0];
+            categoryName = arr[0];
             String resultID = arr[arr.length-1];
 
             for (int i = 1; i < arr.length - 1; i++){

@@ -24,11 +24,15 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kdoctor.R;
+import com.kdoctor.api.RestServices;
 import com.kdoctor.configuration.Kdoctor;
 import com.kdoctor.main.view.MainActivity;
 import com.kdoctor.models.Code;
+import com.kdoctor.models.Question;
+import com.kdoctor.models.Sickness;
 import com.kdoctor.models.SicknessCategory;
 import com.kdoctor.sql.DbManager;
 
@@ -37,6 +41,9 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by Huy on 10/30/2017.
@@ -81,6 +88,50 @@ public class CodeDialog extends DialogFragment{
             public void onItemClickListener(Code code) {
                 onClickListener.onMoreClickListener(code);
                 dismiss();
+            }
+
+            @Override
+            public void onCodeClickListener(Code code) {
+                Question question = new Question();
+                question.setQuestionContaint("Danh sách gợi ý:");
+                question.setAnswers(code.getSicknesses());
+
+                SicknessQuestionDialog dialog = new SicknessQuestionDialog(question, new SicknessQuestionDialog.OnAnswerListener() {
+                    @Override
+                    public void onAnswerListener(String value) {
+                        try{
+                            value = value.split("=")[1];
+                        }
+                        catch (Exception e){
+
+                        }
+
+                        RestServices.getInstance().getServices().searchSickness(value, new Callback<List<Sickness>>() {
+                            @Override
+                            public void success(List<Sickness> sicknesses, Response response) {
+                                if (sicknesses.size() > 0){
+                                    SicknessInfoDialog infoDialog = new SicknessInfoDialog(sicknesses.get(0), new SicknessInfoDialog.OnClickListener() {
+                                        @Override
+                                        public void onSelectListener(Sickness sickness, boolean isSelected) {
+                                            sickness.setSelected(isSelected);
+                                            DbManager.getInstance(getContext()).selectRecord(DbManager.SICKNESSES, sickness, sickness.getId());
+                                        }
+                                    });
+                                    infoDialog.show(getFragmentManager(),"");
+                                }
+                                else{
+                                    Toast.makeText(Kdoctor.getInstance().getApplicationContext(), "Dữ liệu về bệnh này chưa được cập nhật.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void failure(RetrofitError error) {
+                                Toast.makeText(Kdoctor.getInstance().getApplicationContext(), "Lỗi kết nối.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                });
+                dialog.show(getFragmentManager(),"");
             }
 
             @Override
@@ -155,6 +206,14 @@ public class CodeDialog extends DialogFragment{
             final Code code = codes.get(position);
             //holder.tvCode.setText(code.getValue());
             holder.tvCode.setText(code.getSicknesses().size() + " kết quả");
+
+            holder.tvCode.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onItemClickListener.onCodeClickListener(code);
+                }
+            });
+
             holder.tvCategory.setText(code.getCategotyName());
             holder.tvDate.setText(code.getDate());
             holder.tvMore.setOnClickListener(new View.OnClickListener() {
@@ -202,6 +261,7 @@ public class CodeDialog extends DialogFragment{
 
         public interface OnItemClickListener {
             void onItemClickListener(Code code);
+            void onCodeClickListener(Code code);
             void onDeleteClickListener(Code code, CodesAdapter adapter);
         }
     }

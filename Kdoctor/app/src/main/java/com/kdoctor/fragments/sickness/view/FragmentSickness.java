@@ -448,6 +448,24 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
                                         RestServices.getInstance().getServices().putCode(dataPath.replace("api","").replace("/",""), hashMap, new Callback<String>() {
                                             @Override
                                             public void success(String s, Response response) {
+                                                List<Code> codesFromDB2 = DbManager.getInstance(getContext()).getRecords(DbManager.CODES, Code.class);
+                                                List<Code> codes2 = codesFromDB2 == null ? new ArrayList<Code>() : codesFromDB2;
+                                                for (Code c: codes2
+                                                     ) {
+                                                    String codeID = "";
+                                                    try{
+                                                        codeID = c.getValue().split("\\*")[0];
+                                                    }
+                                                    catch (Exception e){
+
+                                                    }
+                                                    if (!codeID.equals("")){
+                                                        codeID += "*" + s;
+                                                    }
+                                                    c.setValue(codeID);
+                                                    break;
+                                                }
+                                                DbManager.getInstance(getActivity()).updateRecords(DbManager.CODES, codes2);
                                                 openCodeDialog();
                                             }
 
@@ -493,7 +511,7 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
                                             String prognostic = item.getPrognostic();
                                             hashMap.put(prognostic, item.getAnswer() == null ? "" : item.getAnswer());
                                         }
-                                        hashMap.put("NOTE", note);
+                                        //hashMap.put("NOTE", note);
 
                                         RestServices.getInstance().getServices().postCode(answer.getDataURL().replace("api","").replace("/",""), hashMap, new Callback<String>() {
                                             @Override
@@ -661,7 +679,12 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
 
     @Override
     public void showLoading() {
-        progressDialog.show();
+        try {
+            progressDialog.show();
+        }
+        catch (Exception e){
+
+        }
     }
 
     @Override

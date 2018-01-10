@@ -132,7 +132,7 @@ public class SicknessInfoDialog extends DialogFragment{
     }
 
     public interface OnClickListener{
-        void onSelectListener(Sickness sickness, boolean isSeleted);
+        void onSelectListener(Sickness sickness, boolean isSelected);
     }
 
     @Override

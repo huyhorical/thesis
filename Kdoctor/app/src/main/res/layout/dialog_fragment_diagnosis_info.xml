@@ -22,7 +22,7 @@
             android:id="@+id/rl"
             android:layout_below="@+id/rv_diagnosis_item"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="70dp"
             android:background="#F44336"
             >
             <RelativeLayout
@@ -41,8 +41,18 @@
                     android:layout_centerHorizontal="true"
                     />
                 <TextView
-                    android:id="@+id/tv_date"
+                    android:id="@+id/tv_category_des"
                     android:layout_below="@+id/tv_sickness_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="(Chuyên mục: )"
+                    android:textColor="#FFFFFF"
+                    android:layout_centerHorizontal="true"
+                    android:textStyle="bold"
+                    />
+                <TextView
+                    android:id="@+id/tv_date"
+                    android:layout_below="@+id/tv_category_des"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Vào lúc 15:30 22/11/2017"

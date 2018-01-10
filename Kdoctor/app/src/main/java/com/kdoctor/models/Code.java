@@ -73,11 +73,18 @@ public class Code {
         List<String> results = new ArrayList<>();
         String[] sicknesses;
         sicknesses = value.split("\\*")[1].split(",");
-        if (sicknesses != null){
-            for (int i=0; i<sicknesses.length; i++){
-                results.add(sicknesses[i]);
+
+        if (sicknesses != null) {
+            for (int i = 0; i < sicknesses.length; i++) {
+                try {
+                    results.add(sicknesses[i]);
+                }
+                catch (Exception e){
+                    Log.i("huy",""+sicknesses[i]);
+                }
             }
         }
+
         return results;
     }
 

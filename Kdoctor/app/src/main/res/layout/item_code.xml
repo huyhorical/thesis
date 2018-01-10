@@ -14,7 +14,7 @@
             android:layout_height="wrap_content"
             android:paddingLeft="10dp"
             android:paddingStart="10dp"
-            android:text="Mã khảo sát: "
+            android:text="Kết quả: "
             />
         <TextView
             android:id="@+id/tv_code"
@@ -31,6 +31,8 @@
             android:text="352681"
             android:gravity="center"
             android:background="@drawable/circle_background"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
             />
         <TextView
             android:id="@+id/tv_date"
