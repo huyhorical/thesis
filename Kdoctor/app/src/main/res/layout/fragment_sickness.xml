@@ -80,7 +80,7 @@
             sothree:fab_icon="@drawable/icon_status"
             sothree:fab_colorPressed="#0ff"
             sothree:fab_colorNormal="#F44336"
-            android:visibility="gone"
+            android:visibility="visible"
             />
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_map"

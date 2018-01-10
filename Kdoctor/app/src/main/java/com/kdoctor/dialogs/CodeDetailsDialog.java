@@ -101,13 +101,14 @@ public class CodeDetailsDialog extends DialogFragment{
 
         rvItems.setAdapter(adapter);
         rvItems.setHasFixedSize(false);
-
+/*
         edtNote.setText(note);
 
         if (itemGet != null){
             edtNote.setText(itemGet.getNote());
         }
-
+*/
+        edtNote.setText("Có "+ ((code == null || code.getSicknesses() == null) ? "0" : code.getSicknesses().size())+" kết quả tham khảo.");
         builder.setTitle("Danh sách triệu chứng...");
         builder.setView(rootView);
 

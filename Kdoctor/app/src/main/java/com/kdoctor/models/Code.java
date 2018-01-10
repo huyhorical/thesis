@@ -1,8 +1,13 @@
 package com.kdoctor.models;
 
+import android.util.Log;
+
 import com.google.gson.annotations.SerializedName;
 
 import org.chalup.microorm.annotations.Column;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by INI\huy.trinh on 23/10/2017.
@@ -63,4 +68,20 @@ public class Code {
 
     @Column("DATE")
     String date;
+
+    public List<String> getSicknesses(){
+        List<String> results = new ArrayList<>();
+        String[] sicknesses;
+        sicknesses = value.split("\\*")[1].split(",");
+        if (sicknesses != null){
+            for (int i=0; i<sicknesses.length; i++){
+                results.add(sicknesses[i]);
+            }
+        }
+        return results;
+    }
+
+    public String getCode(){
+        return value.split("\\*")[0];
+    }
 }

@@ -422,7 +422,7 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
                 RestServices.getInstance().getServices().getCodeItems(code.getCategotyAction(), new Callback<List<CodeItem>>() {
                     @Override
                     public void success(final List<CodeItem> codeItems, Response response) {
-                        RestServices.getInstance().getServices().getCode(code.getCategotyDataPath().replace("api","").replace("/",""), code.getValue(), new Callback<CodeItemGet>() {
+                        RestServices.getInstance().getServices().getCode(code.getCategotyDataPath().replace("api","").replace("/",""), code.getCode(), new Callback<CodeItemGet>() {
                             @Override
                             public void success(final CodeItemGet codeItemGet, Response response) {
                                 //Toast.makeText(getContext(), codeItems.get(0).getPrognostic()+" - 0",Toast.LENGTH_SHORT).show();

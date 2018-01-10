@@ -153,7 +153,8 @@ public class CodeDialog extends DialogFragment{
         @Override
         public void onBindViewHolder(final CodeViewHolder holder, final int position) {
             final Code code = codes.get(position);
-            holder.tvCode.setText(code.getValue());
+            //holder.tvCode.setText(code.getValue());
+            holder.tvCode.setText(code.getSicknesses().size() + " kết quả");
             holder.tvCategory.setText(code.getCategotyName());
             holder.tvDate.setText(code.getDate());
             holder.tvMore.setOnClickListener(new View.OnClickListener() {
