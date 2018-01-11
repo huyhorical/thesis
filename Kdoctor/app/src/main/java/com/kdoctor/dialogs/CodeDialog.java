@@ -143,7 +143,7 @@ public class CodeDialog extends DialogFragment{
         rvCodes.setAdapter(adapter);
         rvCodes.setHasFixedSize(false);
 
-        builder.setTitle("Danh sách khảo sát...");
+        builder.setTitle("Danh sách theo dõi...");
         builder.setView(rootView);
 
         builder.setPositiveButton("  Thêm mới", new DialogInterface.OnClickListener() {
@@ -205,12 +205,19 @@ public class CodeDialog extends DialogFragment{
         public void onBindViewHolder(final CodeViewHolder holder, final int position) {
             final Code code = codes.get(position);
             //holder.tvCode.setText(code.getValue());
-            holder.tvCode.setText(code.getSicknesses().size() + " kết quả");
+            if (code.getSicknesses().size() > 0 && !code.getSicknesses().get(0).equals("0")) {
+                holder.tvCode.setText(code.getSicknesses().size() + " kết quả");
+            }
+            else{
+                holder.tvCode.setText("Trẻ bình thường");
+            }
 
             holder.tvCode.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onItemClickListener.onCodeClickListener(code);
+                    if (code.getSicknesses().size() > 0 && !code.getSicknesses().get(0).equals("0")) {
+                        onItemClickListener.onCodeClickListener(code);
+                    }
                 }
             });
 

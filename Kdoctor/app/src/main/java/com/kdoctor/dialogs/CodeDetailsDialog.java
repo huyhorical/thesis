@@ -118,7 +118,12 @@ public class CodeDetailsDialog extends DialogFragment{
         }
 */
         int totalSickness = (code == null || code.getSicknesses() == null) ? 0 : code.getSicknesses().size();
-        tvNote.setText("Có "+ totalSickness+" kết quả tham khảo.");
+        if (totalSickness > 0 && code.getSicknesses().get(0).equals("0")){
+            tvNote.setText("Trẻ bình thường");
+        }
+        else {
+            tvNote.setText("Có " + totalSickness + " kết quả tham khảo");
+        }
 
         if (totalSickness > 0 && !code.getSicknesses().get(0).equals("0")){
             tvNote.setOnClickListener(new View.OnClickListener() {
@@ -269,6 +274,18 @@ public class CodeDetailsDialog extends DialogFragment{
                 }
             });
 
+            List<String> newList = item.getAnswers();
+            boolean isAlive = false;
+            for (String str :
+                    newList) {
+                if (str.equals("Không")){
+                    isAlive = true;
+                    break;
+                }
+            }
+            if (!isAlive){
+                //newList.add("Không");
+            }
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(Kdoctor.getInstance().getApplicationContext(), android.R.layout.simple_spinner_dropdown_item, item.getAnswers());
             holder.spnItem.setAdapter(adapter);
             holder.spnItem.setSelected(false);
@@ -291,9 +308,9 @@ public class CodeDetailsDialog extends DialogFragment{
                 for (CodeItemGet.ItemGet i:itemGet.getItemGetList()
                         ) {
                     if (i.getPrognostic().equals(item.getPrognostic())){
-                        if (!i.getAnswer().equals("Không")) {
+                        //if (!i.getAnswer().equals("Không")) {
                             holder.edtType.setText(i.getAnswer());
-                        }
+                        //}
                         break;
                     }
                 }
