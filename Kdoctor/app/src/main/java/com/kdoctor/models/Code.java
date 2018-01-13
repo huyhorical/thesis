@@ -80,7 +80,7 @@ public class Code {
                     results.add(sicknesses[i]);
                 }
                 catch (Exception e){
-                    Log.i("huy",""+sicknesses[i]);
+
                 }
             }
         }

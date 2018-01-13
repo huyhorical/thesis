@@ -122,15 +122,27 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Với chức năng: Tìm bệnh viện nhi:"
+                android:text="Với chức năng: Theo dõi bệnh:"
                 android:layout_margin="20dp"
                 android:gravity="center"
                 />
-
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:src="@drawable/guide_14"
+                android:layout_gravity="center"
+                />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Kdoctor sẽ gợi ý cho bạn danh sách các nơi khám nhi và gợi ý nơi gần nhất được thể hiện thông qua màu khác biệt:"
+                android:text="Bạn sẽ nhận được thông tin về các loại bệnh trẻ có thể mắc phải bằng cách cập nhật các triệu chứng theo thời gian."
+                android:layout_margin="20dp"
+                android:gravity="center"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Với chức năng: Tìm bệnh viện nhi:"
                 android:layout_margin="20dp"
                 android:gravity="center"
                 />
@@ -140,6 +152,14 @@
                 android:src="@drawable/guide_6"
                 android:layout_gravity="center"
                 />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Kdoctor sẽ gợi ý cho bạn danh sách các nơi khám nhi và gợi ý nơi gần nhất được thể hiện thông qua màu khác biệt."
+                android:layout_margin="20dp"
+                android:gravity="center"
+                />
+
         </LinearLayout>
     </ScrollView>
     <ScrollView
@@ -225,6 +245,10 @@
                 android:layout_height="240dp"
                 android:src="@drawable/guide_10"
                 android:layout_gravity="center"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
                 />
             <TextView
                 android:layout_width="match_parent"
@@ -245,6 +269,12 @@
                 android:text="Việc hiển thị những loại vaccine đang quan tâm hay chưa quan tâm được thực hiện thông qua:"
                 android:layout_margin="20dp"
                 android:gravity="center"
+                />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:src="@drawable/guide_15"
+                android:layout_gravity="center"
                 />
             <TextView
                 android:layout_width="match_parent"

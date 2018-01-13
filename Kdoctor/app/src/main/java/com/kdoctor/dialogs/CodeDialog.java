@@ -58,6 +58,8 @@ public class CodeDialog extends DialogFragment{
 
     @BindView(R.id.rv_codes)
     RecyclerView rvCodes;
+    @BindView(R.id.tv_alert)
+    TextView tvAlert;
 
     public CodesAdapter getAdapter() {
         return adapter;
@@ -81,6 +83,10 @@ public class CodeDialog extends DialogFragment{
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View rootView = inflater.inflate(R.layout.dialog_fragment_code_list, null);
         ButterKnife.bind(this, rootView);
+
+        if (codes.size() < 1){
+            tvAlert.setVisibility(View.VISIBLE);
+        }
 
         rvCodes.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new CodesAdapter(codes, new CodesAdapter.OnItemClickListener() {
@@ -188,6 +194,13 @@ public class CodeDialog extends DialogFragment{
 
         private List<Code> codes = new ArrayList<Code>();
         OnItemClickListener onItemClickListener;
+
+        public void customDataSetChange(){
+            notifyDataSetChanged();
+            if (codes.size() < 1){
+                CodeDialog.getCurrentIntance().tvAlert.setVisibility(View.VISIBLE);
+            }
+        }
 
         public CodesAdapter(List<Code> codes, OnItemClickListener onItemClickListener){
             this.codes = codes;

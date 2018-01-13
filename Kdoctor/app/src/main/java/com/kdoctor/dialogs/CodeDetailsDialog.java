@@ -35,7 +35,10 @@ import com.kdoctor.models.Question;
 import com.kdoctor.models.Sickness;
 import com.kdoctor.sql.DbManager;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -54,6 +57,11 @@ public class CodeDetailsDialog extends DialogFragment{
     public static int UPDATE = 0;
     public static int CREATE = 1;
     public static int NO_ID = -9999;
+
+    public static CodeDetailsDialog getInstance(){
+        return codeDetailsDialog;
+    }
+    static CodeDetailsDialog codeDetailsDialog;
 
     @BindView(R.id.rv_items)
     RecyclerView rvItems;
@@ -96,10 +104,14 @@ public class CodeDetailsDialog extends DialogFragment{
         View rootView = inflater.inflate(R.layout.dialog_fragment_code_details, null);
         ButterKnife.bind(this, rootView);
 
+        codeDetailsDialog = this;
+
         rvItems.setLayoutManager(new LinearLayoutManager(getActivity()));
         if (type == UPDATE){
             List<CodeItemGet.ItemGet> itemGets = itemGet.getItemGetList();
-
+        }
+        else {
+            tvNote.setVisibility(View.GONE);
         }
         adapter = new CodeItemAdapter(items, itemGet, new CodeItemAdapter.OnItemClickListener() {
             @Override
@@ -249,11 +261,13 @@ public class CodeDetailsDialog extends DialogFragment{
                     //holder.spnItem.performClick();
                 }
             });
-            holder.edtType.setOnTouchListener(new View.OnTouchListener() {
+
+            holder.edtType.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    holder.spnItem.performClick();
-                    return false;
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (hasFocus) {
+                        holder.spnItem.performClick();
+                    }
                 }
             });
 
@@ -271,6 +285,7 @@ public class CodeDetailsDialog extends DialogFragment{
                 @Override
                 public void afterTextChanged(Editable s) {
                     item.setAnswer(s.toString());
+                    CodeDetailsDialog codeDetailsDialog = CodeDetailsDialog.getInstance();
                 }
             });
 
@@ -296,6 +311,10 @@ public class CodeDetailsDialog extends DialogFragment{
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     holder.edtType.setText(holder.spnItem.getSelectedItem().toString());
                     holder.spnItem.setSelection(holder.spnItem.getSelectedItemPosition(),false);
+
+                    if (codeDetailsDialog != null){
+                        codeDetailsDialog.tvNote.setVisibility(View.GONE);
+                    }
                 }
 
                 @Override

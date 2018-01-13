@@ -55,6 +55,7 @@ import com.kdoctor.models.Vaccine;
 import com.kdoctor.sql.DbManager;
 import com.squareup.picasso.Picasso;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -411,9 +412,29 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
         });
     }
 
-
-    void openCodeDialog(){
+    void openCodeDialog() {
         List<Code> codesFromDB = DbManager.getInstance(getContext()).getRecords(DbManager.CODES, Code.class);
+
+        if (codesFromDB != null){
+            for (int i = 0; i<codesFromDB.size()-1; i++){
+                for (int j=i+1; j<codesFromDB.size(); j++){
+                    try {
+                        Date date1 = (new SimpleDateFormat("HH:mm dd/MM/yyyy")).parse(codesFromDB.get(i).getDate());
+                        Date date2 = (new SimpleDateFormat("HH:mm dd/MM/yyyy")).parse(codesFromDB.get(j).getDate());
+                        if (date1.before(date2)){
+                            Code temp = codesFromDB.get(i);
+                            codesFromDB.set(i, codesFromDB.get(j));
+                            codesFromDB.set(j,temp);
+                        }
+                        //c.setDate(new SimpleDateFormat("HH:mm dd/MM/yyyy").format(Calendar.getInstance().getTime()));
+                    }
+                    catch (Exception e){
+
+                    }
+                }
+            }
+        }
+
         List<Code> codes = codesFromDB == null ? new ArrayList<Code>() : codesFromDB;
 
         CodeDialog dialog = new CodeDialog(codes, new CodeDialog.OnClickListener() {
@@ -452,18 +473,21 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
                                                 List<Code> codes2 = codesFromDB2 == null ? new ArrayList<Code>() : codesFromDB2;
                                                 for (Code c: codes2
                                                      ) {
-                                                    String codeID = "";
-                                                    try{
-                                                        codeID = c.getValue().split("\\*")[0];
-                                                    }
-                                                    catch (Exception e){
+                                                    if (c.getValue().equals(code.getValue())) {
+                                                        String codeID = "";
+                                                        try {
+                                                            codeID = c.getValue().split("\\*")[0];
+                                                        } catch (Exception e) {
 
+                                                        }
+                                                        if (!codeID.equals("")) {
+                                                            codeID += "*" + s;
+                                                        }
+                                                        c.setValue(codeID);
+
+                                                        c.setDate(new SimpleDateFormat("HH:mm dd/MM/yyyy").format(Calendar.getInstance().getTime()));
+                                                        break;
                                                     }
-                                                    if (!codeID.equals("")){
-                                                        codeID += "*" + s;
-                                                    }
-                                                    c.setValue(codeID);
-                                                    break;
                                                 }
                                                 DbManager.getInstance(getActivity()).updateRecords(DbManager.CODES, codes2);
                                                 openCodeDialog();
@@ -559,7 +583,8 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
                     public void onDeleteClickListener() {
                         DbManager.getInstance(Kdoctor.getInstance().getApplicationContext()).deleteRecord(DbManager.CODES, "VALUE", code.getValue());
                         adapter.setCodes(DbManager.getInstance(getContext()).getRecords(DbManager.CODES, Code.class));
-                        adapter.notifyDataSetChanged();
+                        //adapter.notifyDataSetChanged();
+                        adapter.customDataSetChange();
                     }
                 });
                 dialog.show(getFragmentManager(), "");
