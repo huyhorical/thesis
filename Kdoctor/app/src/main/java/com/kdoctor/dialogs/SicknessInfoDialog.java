@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -57,9 +59,16 @@ public class SicknessInfoDialog extends DialogFragment{
     TextView tvNote;
     @BindView(R.id.cb_note)
     CheckBox cbNote;
+    @BindView(R.id.rv_ref)
+    RecyclerView rvRef;
+    @BindView(R.id.tv_read_more)
+    TextView tvReadMore;
+
 
     Sickness sickness;
     OnClickListener onClickListener;
+
+    LinkAdapter adapter;
 
     @SuppressLint("ValidFragment")
     public SicknessInfoDialog(Sickness sickness, OnClickListener onClickListener){
@@ -75,8 +84,16 @@ public class SicknessInfoDialog extends DialogFragment{
         View rootView = inflater.inflate(R.layout.dialog_fragment_sickness_info, null);
         ButterKnife.bind(this, rootView);
 
-        String urlImage = sickness.getImageURL().contains("~") ? RestServices.URL + sickness.getImageURL().replace("~/", "") : sickness.getImageURL();
-        Picasso.with(SicknessInfoDialog.this.getContext()).load(urlImage).fit().into(ivSickness);
+        String urlImage = "";
+        if (sickness.getImageURL() != null) {
+            urlImage = sickness.getImageURL().contains("~") ? RestServices.URL + sickness.getImageURL().replace("~/", "") : sickness.getImageURL();
+        }
+        try {
+            Picasso.with(SicknessInfoDialog.this.getContext()).load(urlImage).fit().into(ivSickness);
+        }
+        catch (Exception e){
+
+        }
         tvName.setText("Tên bệnh: " + sickness.getName());
         if (sickness.getName() == null || sickness.getName().equals("")) tvName.setText("Chưa có dữ liệu.");
 
@@ -110,6 +127,27 @@ public class SicknessInfoDialog extends DialogFragment{
                 onClickListener.onSelectListener(sickness, b);
             }
         });
+
+        if (sickness.getLinkRefs() == null || sickness.getLinkRefs().size() < 1){
+            try{
+                sickness.linkRefToList();
+            }
+            catch (Exception e){
+
+            }
+        }
+        if (sickness.getLinkRefs() != null && sickness.getLinkRefs().size() > 0){
+            tvReadMore.setVisibility(View.VISIBLE);
+        }
+        else {
+            tvReadMore.setVisibility(View.GONE);
+        }
+
+        rvRef.setLayoutManager(new LinearLayoutManager(getActivity()));
+        adapter = new LinkAdapter(sickness.getLinkRefs());
+
+        rvRef.setAdapter(adapter);
+        rvRef.setHasFixedSize(false);
 
         builder.setTitle("Thông tin");
         builder.setView(rootView);
@@ -156,6 +194,67 @@ public class SicknessInfoDialog extends DialogFragment{
         }
         catch (Exception e){
 
+        }
+    }
+
+    public static class LinkAdapter extends RecyclerView.Adapter<LinkAdapter.LinkViewHolder>{
+        public List<Sickness.LinkRef> getLinks() {
+            return links;
+        }
+
+        public void setLinks(List<Sickness.LinkRef> links) {
+            this.links = links;
+        }
+
+        private List<Sickness.LinkRef> links = new ArrayList<Sickness.LinkRef>();
+
+        public LinkAdapter(List<Sickness.LinkRef> links){
+            this.links = links;
+        }
+
+        @Override
+        public LinkViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+            View itemView = inflater.inflate(R.layout.item_str, parent, false);
+            return new LinkViewHolder(itemView);
+        }
+
+        @Override
+        public void onBindViewHolder(final LinkViewHolder holder, final int position) {
+            final String link = links.get(position).getLinkBV();
+            final String title = links.get(position).getTenBV();
+            holder.tvText.setText(title);
+            holder.tvText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String newLink = link;
+                    if (!newLink.startsWith("http://") && !newLink.startsWith("https://"))
+                        newLink = "http://" + newLink;
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(newLink));
+                    Kdoctor.getInstance().getApplicationContext().startActivity(browserIntent);
+                }
+            });
+        }
+
+        @Override
+        public int getItemCount() {
+            try {
+                return links.size();
+            }
+            catch (Exception e){
+
+            }
+            return 0;
+        }
+
+        public class LinkViewHolder extends RecyclerView.ViewHolder{
+            @BindView(R.id.tv_text)
+            TextView tvText;
+
+            public LinkViewHolder(View itemView) {
+                super(itemView);
+                ButterKnife.bind(this, itemView);
+            }
         }
     }
 }

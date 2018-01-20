@@ -59,7 +59,7 @@ public class Question {
             values = values[1].split("@");
             questionTitle = values[0].split(":")[0];
             //questionContaint = values[0].split(":")[1];
-            questionContaint = values[0].replace(values[0].split(":")[0],"");
+            questionContaint = values[0].replace(values[0].split(":")[0],"").replace(":", "");
             answers = new ArrayList<String>();
             for (int i = 1; i < values.length; i++) {
                 answers.add(values[i]);

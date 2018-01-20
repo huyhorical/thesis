@@ -66,6 +66,8 @@ public class SicknessesDialog extends DialogFragment{
     TextView tvTitle;
     @BindView(R.id.rv_sickness)
     RecyclerView rvSickness;
+    @BindView(R.id.tv_alert)
+    TextView tvAlert;
 
     public SicknessesAdapter getAdapter() {
         return adapter;
@@ -97,6 +99,10 @@ public class SicknessesDialog extends DialogFragment{
         ButterKnife.bind(this, rootView);
 
         sicknessesDialog = this;
+
+        if (this.sicknesses.size() < 1){
+            tvAlert.setVisibility(View.VISIBLE);
+        }
 
         if (category != null) {
             tvTitle.setText(category.getName());

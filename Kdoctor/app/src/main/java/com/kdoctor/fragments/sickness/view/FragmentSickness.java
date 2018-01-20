@@ -143,6 +143,13 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
 
             @Override
             public void onNoteClickListener(Sickness sickness, boolean isSelected) {
+                try {
+                    sickness.listToLinkRef();
+                }
+                catch (Exception e){
+
+                }
+
                 sickness.setSelected(isSelected);
                 DbManager.getInstance(getContext()).selectRecord(DbManager.SICKNESSES, sickness, sickness.getId());
             }
@@ -253,6 +260,14 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
                     for (int i = sicknesses.size() - 1; i >= 0; i--){
                         if (sicknesses.get(i).isSelected() == false){
                             sicknesses.remove(i);
+                        }
+                        else {
+                            try {
+                                sicknesses.get(i).linkRefToList();
+                            }
+                            catch (Exception e){
+
+                            }
                         }
                     }
                 }
@@ -626,6 +641,13 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
                             RestServices.getInstance().getServices().getSickness(id, new Callback<Sickness>() {
                                 @Override
                                 public void success(Sickness sickness, Response response) {
+                                    try{
+                                        sickness.listToLinkRef();
+                                    }
+                                    catch (Exception e){
+
+                                    }
+
                                     SicknessInfoDialog dialog = new SicknessInfoDialog(sickness, new SicknessInfoDialog.OnClickListener() {
                                         @Override
                                         public void onSelectListener(Sickness sickness, boolean isSelected) {

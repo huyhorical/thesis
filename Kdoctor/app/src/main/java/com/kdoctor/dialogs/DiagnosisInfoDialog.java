@@ -95,6 +95,12 @@ public class DiagnosisInfoDialog extends DialogFragment{
                     @Override
                     public void success(List<Sickness> sicknesses, Response response) {
                         if (sicknesses.size() > 0){
+                            try{
+                                sicknesses.get(0).listToLinkRef();
+                            }
+                            catch (Exception e){
+
+                            }
                             SicknessInfoDialog infoDialog = new SicknessInfoDialog(sicknesses.get(0), new SicknessInfoDialog.OnClickListener() {
                                 @Override
                                 public void onSelectListener(Sickness sickness, boolean isSelected) {

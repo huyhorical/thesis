@@ -91,6 +91,7 @@ public class DbManager extends SQLiteOpenHelper {
                     + "TREATMENT text, "
                     + "IMAGE_URL text, "
                     + "NOTE text, "
+                    + "LINK_REF text, "
                     + "SELECTED int)";
             db.execSQL(query);
         }

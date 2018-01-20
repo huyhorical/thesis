@@ -5,10 +5,10 @@ android {
     buildToolsVersion '25.0.3'
     defaultConfig {
         applicationId "com.kdoctor"
-        minSdkVersion 21
+        minSdkVersion 19
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        versionCode 3
+        versionName "3.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }

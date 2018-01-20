@@ -96,6 +96,8 @@ public class CodeDetailsDialog extends DialogFragment{
         this.onCall = onCall;
     }
 
+    LinearLayoutManager linearLayoutManager;
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -106,7 +108,9 @@ public class CodeDetailsDialog extends DialogFragment{
 
         codeDetailsDialog = this;
 
-        rvItems.setLayoutManager(new LinearLayoutManager(getActivity()));
+        linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager.setReverseLayout(false);
+        rvItems.setLayoutManager(linearLayoutManager);
         if (type == UPDATE){
             List<CodeItemGet.ItemGet> itemGets = itemGet.getItemGetList();
         }
@@ -122,6 +126,23 @@ public class CodeDetailsDialog extends DialogFragment{
 
         rvItems.setAdapter(adapter);
         rvItems.setHasFixedSize(false);
+
+        try{
+            for (CodeItemGet.ItemGet i:itemGet.getItemGetList()
+                    ) {
+                for (CodeItem item:items
+                     ) {
+                    if (i.getPrognostic().equals(item.getPrognostic())){
+                        item.setAnswer(i.getAnswer());
+                        break;
+                    }
+                }
+
+            }
+        }
+        catch (Exception e){
+
+        }
 /*
         edtNote.setText(note);
 
@@ -159,6 +180,12 @@ public class CodeDetailsDialog extends DialogFragment{
                                 @Override
                                 public void success(List<Sickness> sicknesses, Response response) {
                                     if (sicknesses.size() > 0){
+                                        try{
+                                            sicknesses.get(0).listToLinkRef();
+                                        }
+                                        catch (Exception e){
+
+                                        }
                                         SicknessInfoDialog infoDialog = new SicknessInfoDialog(sicknesses.get(0), new SicknessInfoDialog.OnClickListener() {
                                             @Override
                                             public void onSelectListener(Sickness sickness, boolean isSelected) {
@@ -184,7 +211,6 @@ public class CodeDetailsDialog extends DialogFragment{
                 }
             });
         }
-
         builder.setTitle("Danh sách triệu chứng...");
         builder.setView(rootView);
 
@@ -208,6 +234,11 @@ public class CodeDetailsDialog extends DialogFragment{
         });
 
         return builder.create();
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
     }
 
     @Nullable
@@ -284,8 +315,14 @@ public class CodeDetailsDialog extends DialogFragment{
 
                 @Override
                 public void afterTextChanged(Editable s) {
-                    item.setAnswer(s.toString());
-                    CodeDetailsDialog codeDetailsDialog = CodeDetailsDialog.getInstance();
+                    //if (!s.toString().equals("")) {
+                        item.setAnswer(s.toString());
+                        CodeDetailsDialog codeDetailsDialog = CodeDetailsDialog.getInstance();
+
+                        if (itemGet != null) {
+                            itemGet.getItemGetList().get(position).setAnswer(s.toString());
+                        }
+                    //}
                 }
             });
 

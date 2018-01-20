@@ -49,6 +49,8 @@ public class DrugsDialog extends DialogFragment{
 
     @BindView(R.id.rv_drug)
     RecyclerView rvDrug;
+    @BindView(R.id.tv_alert)
+    TextView tvAlert;
 
     public DrugsAdapter getAdapter() {
         return adapter;
@@ -78,6 +80,10 @@ public class DrugsDialog extends DialogFragment{
         ButterKnife.bind(this, rootView);
 
         drugsDialog = this;
+
+        if (this.drugs.size() < 1){
+            tvAlert.setVisibility(View.VISIBLE);
+        }
 
         rvDrug.setLayoutManager(new LinearLayoutManager(getActivity()));
 

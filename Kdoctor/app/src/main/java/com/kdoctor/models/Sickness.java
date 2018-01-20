@@ -1,15 +1,20 @@
 package com.kdoctor.models;
 
+import android.util.Log;
+
 import com.google.gson.annotations.SerializedName;
 
 import org.chalup.microorm.annotations.Column;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Huy on 10/30/2017.
  */
 
 public class Sickness {
-
     public int getId() {
         return id;
     }
@@ -116,4 +121,89 @@ public class Sickness {
 
     @Column("SELECTED")
     int isSelected;
+
+    public List<LinkRef> getLinkRefs() {
+        return linkRefs;
+    }
+
+    public void setLinkRefs(List<LinkRef> linkRefs) {
+        this.linkRefs = linkRefs;
+    }
+
+    public String getLinkRef() {
+        return linkRef;
+    }
+
+    public void setLinkRef(String linkRef) {
+        this.linkRef = linkRef;
+    }
+
+    @Column("LINK_REF")
+    String linkRef;
+
+    public List<LinkRef> linkRefToList(){
+        List<LinkRef> linkR = new ArrayList<>();
+        try{
+            if (linkRef != null && !linkRef.equals("")){
+                String strs[] = linkRef.split("\\|");
+                for (String s:strs
+                     ) {
+                    try{
+                    String strss[] = s.split("\\*");
+                    LinkRef li = new LinkRef();
+                    li.setTenBV(strss[0]);
+                    li.setLinkBV(strss[1]);
+                        linkR.add(li);
+                    }
+                    catch (Exception e){
+
+                    }
+                }
+            }
+        }
+        catch (Exception e){
+
+        }
+        linkRefs = linkR;
+        return linkR;
+    }
+
+    public String listToLinkRef(){
+        String st = "";
+        if (linkRefs != null){
+            for (LinkRef l :
+                    linkRefs) {
+                st += l.getTenBV() + "*" + l.getLinkBV() + "|";
+            }
+        }
+        st = st.substring(0,st.length()-1);
+        linkRef = st;
+        return st;
+    }
+
+    @SerializedName("LSTBV")
+    List<LinkRef> linkRefs;
+
+    public class LinkRef{
+        public String getTenBV() {
+            return tenBV;
+        }
+
+        public void setTenBV(String tenBV) {
+            this.tenBV = tenBV;
+        }
+
+        public String getLinkBV() {
+            return linkBV;
+        }
+
+        public void setLinkBV(String linkBV) {
+            this.linkBV = linkBV;
+        }
+
+        @SerializedName("TENBV")
+        String tenBV;
+        @SerializedName("LINKBV")
+        String linkBV;
+    }
 }

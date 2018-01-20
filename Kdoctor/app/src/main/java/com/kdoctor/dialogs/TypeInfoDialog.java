@@ -13,6 +13,7 @@ import android.support.v7.widget.ListViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -108,6 +109,17 @@ public class TypeInfoDialog extends DialogFragment{
                         if (sicknesses == null){
                             return;
                         }
+
+                        for (Sickness s:sicknesses
+                                ) {
+                            try{
+                                s.listToLinkRef();
+                            }
+                            catch (Exception e){
+
+                            }
+                        }
+
                         try {
                             adapter.sicknesses = sicknesses;
                             adapter.notifyDataSetChanged();
@@ -176,8 +188,14 @@ public class TypeInfoDialog extends DialogFragment{
             Sickness sickness = sicknesses.get(position);
             final String text = sickness.getName();
             holder.tvText.setText(text);
-            String urlImage = sickness.getImageURL().contains("~") ? RestServices.URL + sickness.getImageURL().replace("~/", "") : sickness.getImageURL();
-            Picasso.with(TypeInfoDialog.this.getContext()).load(urlImage).fit().into(holder.ivSickness);
+            String urlImage = "";
+            try {
+                urlImage = sickness.getImageURL().contains("~") ? RestServices.URL + sickness.getImageURL().replace("~/", "") : sickness.getImageURL();
+                Picasso.with(TypeInfoDialog.this.getContext()).load(urlImage).fit().into(holder.ivSickness);
+            }
+            catch (Exception e){
+
+            }
             holder.llItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
