@@ -317,7 +317,7 @@ public class FragmentVaccine extends Fragment implements IFragmentVaccine{
                 isWaiting = true;
 
                 try {
-                    Toast.makeText(getActivity().getApplicationContext(), "Hiện tại chỉ hỗ trợ tại khu vực TP HCM...", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity().getApplicationContext(), "Hiện tại chỉ hỗ trợ tại khu vực TP HCM...", Toast.LENGTH_SHORT).show();
                 }
                 catch (Exception e){
 

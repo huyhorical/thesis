@@ -104,7 +104,10 @@ public class HospitalMapDialog extends DialogFragment implements OnMapReadyCallb
                         markNearest(vaccineCenter);
 
                         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(vaccineCenter.getLat(), vaccineCenter.getLon()), 12);
-                        googleMap.moveCamera(cameraUpdate);
+                        if (!isMoved) {
+                            googleMap.moveCamera(cameraUpdate);
+                            isMoved = true;
+                        }
                     }
 
                     @Override
@@ -163,6 +166,8 @@ public class HospitalMapDialog extends DialogFragment implements OnMapReadyCallb
     }
 
     public List<VaccineCenter> provinceFilter(List<VaccineCenter> centers) {
+        List<VaccineCenter> centerList = centers;
+        /*
         List<VaccineCenter> centerList = new ArrayList<>();
         for (VaccineCenter center : centers
                 ) {
@@ -185,6 +190,7 @@ public class HospitalMapDialog extends DialogFragment implements OnMapReadyCallb
                     break;
             }
         }
+        */
         return centerList;
     }
 
@@ -235,23 +241,32 @@ public class HospitalMapDialog extends DialogFragment implements OnMapReadyCallb
                         if (center.getName() == null || center.getName().equals("")) {
                             center.setName("Chưa cập nhật.");
                         }
-                        ;
+
                         if (center.getAddress() == null || center.getAddress().equals("")) {
                             center.setAddress("Chưa cập nhật.");
                         }
-                        ;
+
                         if (center.getPhone() == null || center.getPhone().equals("")) {
                             center.setPhone("Chưa cập nhật.");
                         }
-                        ;
-                        if (center.getNote() == null || center.getNote().equals("")) {
+
+                        String ss = "";
+                        if (!(center.getNote() == null || center.getNote().equals(""))) {
+                            ss += "Ghi chú: " + center.getNote();
+                        }
+                        else{
                             center.setNote("Chưa cập nhật.");
                         }
-                        ;
+
+                        if (center.getCalendar() == null || center.getCalendar().equals("")) {
+                            center.setCalendar("Chưa cập nhật.");
+                        }
+
                         content += "<b>" + center.getName() + "</b><br/>";
                         content += "Địa chỉ: " + center.getAddress() + "<br/>";
                         content += "Điện thoại liên hệ: " + center.getPhone() + "<br/>";
-                        content += "Lịch làm việc: " + center.getNote();
+                        content += "Lịch làm việc: " + center.getCalendar() + "<br/>";
+                        content += ss;
 
                         QuestionDialog dialog = new QuestionDialog("Thông tin", Html.fromHtml(content).toString(), new QuestionDialog.OnOneChoiceSelection() {
                             @Override
@@ -284,6 +299,8 @@ public class HospitalMapDialog extends DialogFragment implements OnMapReadyCallb
             googleMap.setMyLocationEnabled(true);
         }
     }
+
+    boolean isMoved = false;
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 1001;
 
@@ -350,7 +367,10 @@ public class HospitalMapDialog extends DialogFragment implements OnMapReadyCallb
                         markNearest(vaccineCenter);
 
                         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(vaccineCenter.getLat(), vaccineCenter.getLon()), 12);
-                        googleMap.moveCamera(cameraUpdate);
+                        if (!isMoved) {
+                            googleMap.moveCamera(cameraUpdate);
+                            isMoved = true;
+                        }
                     }
 
                     @Override

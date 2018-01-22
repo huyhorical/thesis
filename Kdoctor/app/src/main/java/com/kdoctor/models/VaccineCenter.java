@@ -87,4 +87,16 @@ public class VaccineCenter {
     @SerializedName("NOTE")
     @Column("NOTE")
     String note;
+
+    public String getCalendar() {
+        return calendar;
+    }
+
+    public void setCalendar(String calendar) {
+        this.calendar = calendar;
+    }
+
+    @SerializedName("CALENDAR")
+    @Column("CALENDAR")
+    String calendar;
 }

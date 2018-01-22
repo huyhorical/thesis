@@ -213,6 +213,8 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
                         rvCategories.setVisibility(View.GONE);
                         rvSickness.setVisibility(View.VISIBLE);
                         ((MainActivity)getActivity()).go(category.getName());
+
+                        fam.collapse();
                     }
 
                     @Override
@@ -400,7 +402,7 @@ public class FragmentSickness extends Fragment implements IFragmentSickness {
                 isWaiting = true;
 
                 try {
-                    Toast.makeText(getActivity().getApplicationContext(), "Hiện tại chỉ hỗ trợ tại khu vực TP HCM...", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity().getApplicationContext(), "Hiện tại chỉ hỗ trợ tại khu vực TP HCM...", Toast.LENGTH_SHORT).show();
                 }
                 catch (Exception e){
 
